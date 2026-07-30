@@ -366,7 +366,7 @@ function initializeBentoWorkspace() {
     }
   }, 1000);
   
-  // Parallax tilt listeners
+  // Flat sheen hover mouse tracking (no 3D tilt)
   const bentoCards = document.querySelectorAll('.bento-card, .service-card, .portfolio-card');
   bentoCards.forEach(card => {
     card.addEventListener('mousemove', (e) => {
@@ -377,18 +377,6 @@ function initializeBentoWorkspace() {
       // Sheen tracking
       card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
       card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-      
-      // 3D rotation computation
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      const angleX = (yc - y) / 10;
-      const angleY = (x - xc) / 10;
-      
-      card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg)`;
     });
   });
   
@@ -522,23 +510,13 @@ function initializeServicesDeck() {
       </div>
     `;
     
-    // Add 3D Hover tilt to generated card
+    // Flat sheen hover mouse tracking (no 3D tilt)
     card.addEventListener('mousemove', (e) => {
       const rect = card.getBoundingClientRect();
       const x = e.clientX - rect.left;
       const y = e.clientY - rect.top;
       card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
       card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-      
-      const xc = rect.width / 2;
-      const yc = rect.height / 2;
-      const angleX = (yc - y) / 8;
-      const angleY = (x - xc) / 8;
-      card.style.transform = `perspective(1000px) rotateX(${angleX}deg) rotateY(${angleY}deg) scale(1.02)`;
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      card.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale(1)`;
     });
     
     grid.appendChild(card);
