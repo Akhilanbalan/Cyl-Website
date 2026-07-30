@@ -1,0 +1,203 @@
+/* Scene 7: Global Vision Layout */
+#scene-vision {
+  background: radial-gradient(circle at 50% 50%, rgba(224, 215, 255, 0.25) 0%, rgba(245, 243, 251, 0.98) 100%);
+}
+
+.vision-container {
+  width: 100%;
+  max-width: 1200px;
+  display: flex;
+  flex-direction: column;
+  gap: 40px;
+  z-index: 10;
+}
+
+.vision-showcase {
+  display: flex;
+  gap: 30px;
+  align-items: center;
+  width: 100%;
+}
+
+/* World Map Canvas Container */
+.world-map-wrapper {
+  width: 50%;
+  height: 400px;
+  background: rgba(255, 255, 255, 0.7);
+  border: 1px solid rgba(109, 74, 255, 0.1);
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 30px rgba(109, 74, 255, 0.02);
+}
+
+#map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.map-stats {
+  position: absolute;
+  bottom: 20px;
+  left: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  font-family: var(--font-display);
+  font-size: 0.75rem;
+  background: rgba(255, 255, 255, 0.9);
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: 1px solid rgba(109, 74, 255, 0.1);
+  box-shadow: 0 4px 15px rgba(109, 74, 255, 0.04);
+}
+
+.map-stat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--text-silver);
+}
+
+.map-stat-value {
+  color: var(--primary-purple);
+  font-weight: 700;
+}
+
+/* Vision Pitch Card on Right Side */
+.vision-pitch-card {
+  width: 50%;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  position: relative;
+  align-items: flex-start;
+  text-align: left;
+  background: rgba(255, 255, 255, 0.75);
+  border: 1px solid rgba(109, 74, 255, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 10px 30px rgba(109, 74, 255, 0.02);
+}
+
+.pitch-badge {
+  font-family: var(--font-display);
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.15em;
+  color: var(--primary-purple);
+  background: rgba(109, 74, 255, 0.05);
+  border: 1px solid rgba(109, 74, 255, 0.15);
+  padding: 6px 14px;
+  border-radius: 20px;
+  text-transform: uppercase;
+}
+
+.pitch-title {
+  font-family: var(--font-display);
+  font-size: 2.4rem;
+  font-weight: 900;
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--text-crystal);
+}
+
+.pitch-lead {
+  font-size: 1.1rem;
+  color: var(--text-silver);
+  line-height: 1.5;
+  font-weight: 300;
+  max-width: 480px;
+}
+
+.pitch-divider {
+  width: 100%;
+  height: 1px;
+  background: rgba(109, 74, 255, 0.08);
+}
+
+/* Mini Roadmap Grid */
+.roadmap-grid-mini {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+  width: 100%;
+}
+
+.roadmap-card-mini {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+.roadmap-card-mini i {
+  color: var(--primary-purple);
+  background: rgba(109, 74, 255, 0.05);
+  border: 1px solid rgba(109, 74, 255, 0.1);
+  padding: 8px;
+  border-radius: 8px;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.roadmap-card-mini div {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.roadmap-card-mini strong {
+  font-family: var(--font-display);
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--text-crystal);
+}
+
+.roadmap-card-mini span {
+  font-size: 0.8rem;
+  color: var(--text-silver);
+  line-height: 1.3;
+  opacity: 0.85;
+}
+
+.final-cta-btn-wrapper {
+  margin-top: 10px;
+  width: 100%;
+  display: flex;
+  justify-content: flex-start;
+}
+
+.final-btn {
+  padding: 16px 36px;
+  font-size: 1rem;
+  border-radius: 30px;
+  width: auto;
+}
+
+@media (max-width: 1024px) {
+  .vision-showcase {
+    flex-direction: column;
+  }
+  
+  .world-map-wrapper, .vision-pitch-card {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .pitch-title {
+    font-size: 1.8rem;
+  }
+  
+  .roadmap-grid-mini {
+    grid-template-columns: 1fr;
+    gap: 16px;
+  }
+}

@@ -1,0 +1,182 @@
+/* Problem & Solution Scene Styling */
+#scene-problem-solution {
+  background: radial-gradient(circle at 10% 20%, rgba(224, 215, 255, 0.3) 0%, rgba(245, 243, 251, 0.98) 100%);
+}
+
+.comparison-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 32px;
+  width: 100%;
+  max-width: 1100px;
+  margin: 20px 0 50px 0;
+  z-index: 10;
+}
+
+.comparison-card {
+  position: relative;
+  padding: 40px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  background: rgba(255, 255, 255, 0.7);
+  box-shadow: 0 10px 30px rgba(109, 74, 255, 0.03);
+  transition: var(--transition-smooth);
+}
+
+/* Background glows for cards */
+.card-glow-red {
+  position: absolute;
+  top: -30%;
+  left: -30%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(239, 68, 68, 0.04) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.card-glow-purple {
+  position: absolute;
+  top: -30%;
+  left: -30%;
+  width: 60%;
+  height: 60%;
+  background: radial-gradient(circle, rgba(109, 74, 255, 0.05) 0%, transparent 70%);
+  filter: blur(40px);
+  pointer-events: none;
+}
+
+.comparison-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  border-bottom: 1px solid rgba(109, 74, 255, 0.06);
+  padding-bottom: 20px;
+}
+
+.comp-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.challenge-card .comp-icon {
+  background: rgba(239, 68, 68, 0.08);
+  border: 1px solid rgba(239, 68, 68, 0.15);
+  color: #EF4444;
+}
+
+.solution-card .comp-icon {
+  background: rgba(109, 74, 255, 0.08);
+  border: 1px solid rgba(109, 74, 255, 0.15);
+  color: var(--primary-purple);
+}
+
+.comparison-header h3 {
+  font-family: var(--font-display);
+  font-size: 1.6rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.challenge-card h3 {
+  color: #DC2626;
+}
+
+.solution-card h3 {
+  color: var(--text-crystal);
+}
+
+.comparison-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  margin: 0;
+  padding: 0;
+}
+
+.comparison-list li {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.list-bullet {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 900;
+  font-size: 0.8rem;
+  margin-top: 2px;
+  flex-shrink: 0;
+}
+
+.list-bullet.red {
+  background: rgba(239, 68, 68, 0.08);
+  color: #EF4444;
+  border: 1px solid rgba(239, 68, 68, 0.15);
+}
+
+.list-bullet.purple {
+  background: rgba(109, 74, 255, 0.08);
+  color: var(--primary-purple);
+  border: 1px solid rgba(109, 74, 255, 0.15);
+}
+
+.list-text {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.list-text strong {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: var(--text-crystal);
+}
+
+.list-text span {
+  font-size: 0.85rem;
+  color: var(--text-silver);
+  line-height: 1.4;
+  opacity: 0.9;
+}
+
+.section-footer-cta {
+  display: flex;
+  justify-content: center;
+  z-index: 10;
+}
+
+/* Hover glow tweaks */
+.challenge-card:hover {
+  border-color: rgba(239, 68, 68, 0.15);
+  box-shadow: 0 12px 40px 0 rgba(239, 68, 68, 0.04);
+}
+
+.solution-card:hover {
+  border-color: rgba(109, 74, 255, 0.2);
+  box-shadow: 0 12px 40px 0 rgba(109, 74, 255, 0.08);
+}
+
+@media (max-width: 900px) {
+  .comparison-container {
+    grid-template-columns: 1fr;
+    gap: 24px;
+    padding: 0 16px;
+  }
+  
+  .comparison-card {
+    padding: 24px;
+  }
+}

@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CYL OS — The AI-Powered Creative Operating System</title>
+  <meta name="description" content="Build, manage, and scale your complete digital identity through one intelligent, futuristic creative operating system.">
+  
+  <!-- Tailwind/CSS Files -->
+  <link rel="stylesheet" href="./src/styles/main.css">
+  <link rel="stylesheet" href="./src/styles/loading.css">
+  <link rel="stylesheet" href="./src/styles/welcome.css">
+  <link rel="stylesheet" href="./src/styles/problem_solution.css">
+  <link rel="stylesheet" href="./src/styles/bento.css">
+  <link rel="stylesheet" href="./src/styles/services.css">
+  <link rel="stylesheet" href="./src/styles/work.css">
+  <link rel="stylesheet" href="./src/styles/impact.css">
+  <link rel="stylesheet" href="./src/styles/vision.css">
+  
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <style>
+    /* Navigation Bar Styling */
+    header.os-navbar {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 70px;
+      padding: 0 4%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      z-index: 100;
+      background: linear-gradient(180deg, rgba(5,5,5,0.8) 0%, transparent 100%);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border-bottom: 1px solid rgba(255, 255, 255, 0.03);
+      opacity: 0;
+      transform: translateY(-20px);
+      transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+      pointer-events: none;
+    }
+
+    header.os-navbar.visible {
+      opacity: 1;
+      transform: translateY(0);
+      pointer-events: all;
+    }
+
+    .nav-logo-group {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-crystal);
+    }
+
+    .nav-logo {
+      width: 32px;
+      height: 32px;
+      object-fit: contain;
+      mix-blend-mode: screen;
+    }
+
+    .nav-brand-name {
+      font-family: var(--font-display);
+      font-weight: 900;
+      font-size: 1.1rem;
+      letter-spacing: 0.05em;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 32px;
+      list-style: none;
+    }
+
+    .nav-link a {
+      text-decoration: none;
+      color: var(--text-silver);
+      font-family: var(--font-display);
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      transition: var(--transition-fast);
+      position: relative;
+      padding: 6px 0;
+    }
+
+    .nav-link a::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 0;
+      height: 1px;
+      background: var(--glow-lavender);
+      transition: var(--transition-fast);
+    }
+
+    .nav-link a:hover {
+      color: var(--text-crystal);
+    }
+
+    .nav-link a:hover::after, .nav-link.active a::after {
+      width: 100%;
+    }
+
+    .nav-action-btn {
+      padding: 10px 20px;
+      font-size: 0.8rem;
+    }
+
+    /* Fixed ambient glows */
+    .ambient-sphere {
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      border-radius: 50%;
+      pointer-events: none;
+      filter: blur(100px);
+      z-index: 1;
+      opacity: 0.3;
+    }
+
+    .ambient-sphere.purple-glow {
+      background: radial-gradient(circle, var(--primary-purple) 0%, transparent 70%);
+      top: -100px;
+      left: -100px;
+    }
+
+    .ambient-sphere.lavender-glow {
+      background: radial-gradient(circle, var(--glow-lavender) 0%, transparent 70%);
+      bottom: -150px;
+      right: -150px;
+    }
+
+    @media (max-width: 900px) {
+      .nav-links {
+        display: none; /* simple responsive nav */
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <div id="app-container">
+    
+    <!-- Background Canvas for Neural Network & Map -->
+    <canvas id="bg-canvas"></canvas>
+    
+    <!-- Mouse Cursor Glow Light -->
+    <div class="cursor-glow" id="cursor-glow"></div>
+    
+    <!-- General Ambient Glows -->
+    <div class="ambient-sphere purple-glow"></div>
+    <div class="ambient-sphere lavender-glow"></div>
+
+    <!-- Header Navigation -->
+    <header class="os-navbar" id="os-header">
+      <a href="#" class="nav-logo-group" onclick="transitionToScene('welcome')">
+        <img src="/assets/logo.png" alt="CYL Logo" class="nav-logo">
+        <span class="nav-brand-name">CYL OS</span>
+      </a>
+      <ul class="nav-links">
+        <li class="nav-link active" data-scene="welcome"><a href="#" onclick="transitionToScene('welcome')">Home</a></li>
+        <li class="nav-link" data-scene="problem-solution"><a href="#" onclick="transitionToScene('problem-solution')">Challenges</a></li>
+        <li class="nav-link" data-scene="bento"><a href="#" onclick="transitionToScene('bento')">Ecosystem</a></li>
+        <li class="nav-link" data-scene="services"><a href="#" onclick="transitionToScene('services')">Services</a></li>
+        <li class="nav-link" data-scene="work"><a href="#" onclick="transitionToScene('work')">Showcase</a></li>
+        <li class="nav-link" data-scene="impact"><a href="#" onclick="transitionToScene('impact')">Impact</a></li>
+        <li class="nav-link" data-scene="vision"><a href="#" onclick="transitionToScene('vision')">Vision</a></li>
+      </ul>
+      <a href="#" class="btn-primary nav-action-btn" onclick="transitionToScene('vision')">
+        ENTER CYL OS
+      </a>
+    </header>
+
+    <!-- ================= SCENE 1 — {LOADING: CYL INITIALIZATION} ================= -->
+    <section class="scene active" id="scene-loading">
+      <div class="ambient-nebula"></div>
+      <div class="loading-wrapper">
+        <div class="loader-orb-system">
+          <div class="loader-glass-orb" id="loader-orb"></div>
+          
+          <!-- Refined SVG line-drawing overlay representing CYL -->
+          <svg class="loading-logo-svg" viewBox="0 0 240 240" id="loading-logo-svg">
+            <g fill="none" stroke="url(#loader-gradient)" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">
+              <!-- Stylized C -->
+              <path class="logo-path" d="M 75 95 A 25 25 0 0 0 50 120 A 25 25 0 0 0 75 145" />
+              <!-- Stylized Y -->
+              <path class="logo-path" d="M 95 95 L 120 120 L 145 95" />
+              <path class="logo-path" d="M 120 120 L 120 145" />
+              <!-- Stylized L -->
+              <path class="logo-path" d="M 170 95 L 170 145 L 195 145" />
+            </g>
+          </svg>
+          
+          <!-- Translucent Logo (faded out initially) -->
+          <img src="/assets/logo.png" alt="CYL Logo" class="loading-logo-img" id="loading-logo-img">
+          
+          <!-- Outer and Inner orbiting dashed rings with nodes -->
+          <div class="orbit-ring inner">
+            <div class="orbit-node"></div>
+          </div>
+          <div class="orbit-ring outer">
+            <div class="orbit-node"></div>
+          </div>
+          
+          <!-- SVG loader circle overlay -->
+          <svg class="loader-svg-ring" viewBox="0 0 240 240">
+            <defs>
+              <linearGradient id="loader-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                <stop offset="0%" stop-color="#6D4AFF" />
+                <stop offset="100%" stop-color="#A78BFA" />
+              </linearGradient>
+            </defs>
+            <circle class="loader-circle-bg" cx="120" cy="120" r="110" />
+            <circle class="loader-circle-fill" id="loader-circle-fill" cx="120" cy="120" r="110" />
+          </svg>
+          
+          <div class="light-sweep" id="loading-light-sweep"></div>
+        </div>
+
+        <div class="loading-status-text active" id="loading-status-text">Initializing CYL OS</div>
+
+        <div class="loading-percentage-wrapper">
+          <span class="loading-percentage-label">CYL SYSTEM CORE</span>
+          <span class="loading-percentage-number" id="loader-percentage">0%</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 2 — {WELCOME EXPERIENCE} ================= -->
+    <section class="scene" id="scene-welcome">
+      <div class="bg-ambient-gradient"></div>
+      <div class="welcome-content">
+        <div class="welcome-logo-container">
+          <img src="/assets/logo.png" alt="CYL Logo" class="welcome-logo-img">
+        </div>
+        
+        <div class="headline-reveal-container">
+          <h1 class="welcome-headline text-gradient-purple">The AI-Powered Creative Operating System</h1>
+        </div>
+        
+        <p class="welcome-sub-headline">Helping startups, creators, and businesses build, manage, and grow their digital identity through one intelligent ecosystem.</p>
+        <p class="welcome-description">Businesses currently rely on multiple disconnected tools for branding, design, content creation, asset management, and collaboration. CYL OS brings these workflows together into a single platform powered by intelligent automation.</p>
+        
+        <div class="cta-group">
+          <a href="#" class="btn-primary" onclick="transitionToScene('problem-solution')" id="btn-enter-os">
+            Explore CYL OS
+            <i data-lucide="terminal"></i>
+          </a>
+          <a href="#" class="btn-secondary" onclick="transitionToScene('bento')" id="btn-explore-eco">
+            View Platform Demo
+            <i data-lucide="compass"></i>
+          </a>
+        </div>
+      </div>
+
+      <div class="scroll-indicator visible" id="welcome-scroll-indicator" onclick="transitionToScene('problem-solution')">
+        <span>Scroll or Click to Initialize OS</span>
+        <div class="scroll-mouse">
+          <div class="scroll-wheel"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 3 — {PROBLEM & SOLUTION} ================= -->
+    <section class="scene" id="scene-problem-solution">
+      <div class="scroller-content">
+        <div class="section-header">
+          <span class="section-label">Digital Identity Challenge</span>
+          <h2 class="section-title text-gradient-purple">Fragmented Workflows vs. Unified Intelligence</h2>
+          <p class="section-desc">Traditional creative management is broken. CYL OS bridges the gap between vision and execution.</p>
+        </div>
+
+        <div class="comparison-container">
+          <!-- Challenges Card -->
+          <div class="comparison-card challenge-card glass-panel">
+            <div class="card-glow-red"></div>
+            <div class="comparison-header">
+              <div class="comp-icon"><i data-lucide="alert-octagon"></i></div>
+              <h3>Current Challenges</h3>
+            </div>
+            <ul class="comparison-list">
+              <li>
+                <div class="list-bullet red">✕</div>
+                <div class="list-text">
+                  <strong>Fragmented creative workflows</strong>
+                  <span>Toggling constantly between multiple disconnected tools and platforms.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet red">✕</div>
+                <div class="list-text">
+                  <strong>Expensive design services</strong>
+                  <span>Paying high fees for slow iterations and inconsistent quality.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet red">✕</div>
+                <div class="list-text">
+                  <strong>Inconsistent branding</strong>
+                  <span>Assets scattered across folders leading to logo, font, and style mismatches.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet red">✕</div>
+                <div class="list-text">
+                  <strong>Time-consuming asset creation</strong>
+                  <span>Hours spent manually resizing marketing banners and social media sizes.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet red">✕</div>
+                <div class="list-text">
+                  <strong>Multiple disconnected tools</strong>
+                  <span>Subscribing to separate platforms for storage, design, management, and sharing.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+
+          <!-- Solution Card -->
+          <div class="comparison-card solution-card glass-panel">
+            <div class="card-glow-purple"></div>
+            <div class="comparison-header">
+              <div class="comp-icon"><i data-lucide="check-circle-2"></i></div>
+              <h3>CYL OS Solution</h3>
+            </div>
+            <ul class="comparison-list">
+              <li>
+                <div class="list-bullet purple">✓</div>
+                <div class="list-text">
+                  <strong>Centralized creative ecosystem</strong>
+                  <span>Everything from ideation to asset management unified in one platform.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet purple">✓</div>
+                <div class="list-text">
+                  <strong>AI-assisted branding</strong>
+                  <span>Instantly generate logos, palettes, and style guidelines dynamically.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet purple">✓</div>
+                <div class="list-text">
+                  <strong>Unified project management</strong>
+                  <span>Manage tasks, review outputs, and track team sprints in real time.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet purple">✓</div>
+                <div class="list-text">
+                  <strong>Smart asset generation</strong>
+                  <span>Automate layouts, posters, banners, and packaging templates instantly.</span>
+                </div>
+              </li>
+              <li>
+                <div class="list-bullet purple">✓</div>
+                <div class="list-text">
+                  <strong>Digital identity management</strong>
+                  <span>Store, scale, and catalog your brand's digital identity in one vault.</span>
+                </div>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="section-footer-cta">
+          <button class="btn-primary" onclick="transitionToScene('bento')">
+            EXPLORE THE ECOSYSTEM
+            <i data-lucide="arrow-right"></i>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 3 — {THE CYL ECOSYSTEM} ================= -->
+    <section class="scene" id="scene-bento">
+      <div class="scroller-content">
+        <div class="bento-container">
+          
+          <!-- Bento Header/Taskbar -->
+          <div class="bento-taskbar glass-panel">
+            <div class="taskbar-brand">
+              <img src="/assets/logo.png" alt="CYL logo" class="taskbar-logo">
+              <span>CYL_OS CORE v1.0.4</span>
+            </div>
+            <div class="taskbar-status">
+              <div><span class="status-dot"></span>SYS_ACTIVE</div>
+              <div class="clock-widget" id="os-clock">00:00:00</div>
+            </div>
+          </div>
+
+          <!-- Module 1: AI Studio -->
+          <div class="bento-card bento-ai-studio glass-panel" id="bento-ai-studio">
+            <div class="card-sheen"></div>
+            <div class="card-title-group">
+              <div class="card-icon"><i data-lucide="sparkles"></i></div>
+              <div class="card-name">AI Studio</div>
+              <div class="card-tag">Branding Machine Learning</div>
+              <p class="bento-card-desc">Generate logos, brand concepts, marketing assets, and creative content.</p>
+            </div>
+            
+            <div class="ai-studio-workspace">
+              <div class="workspace-header">
+                <div class="window-dots">
+                  <span class="window-dot red"></span>
+                  <span class="window-dot yellow"></span>
+                  <span class="window-dot green"></span>
+                </div>
+                <div class="workspace-tab">Generator.cyl</div>
+              </div>
+              <div class="workspace-content">
+                <div class="workspace-controls">
+                  <div class="studio-input-group">
+                    <label class="studio-label">Asset Goal</label>
+                    <select class="studio-select" id="studio-goal-select">
+                      <option value="logo">Futuristic Logo System</option>
+                      <option value="guidelines">Brand Identity Guidelines</option>
+                      <option value="palette">Harmonious Palette Generator</option>
+                    </select>
+                  </div>
+                  <div class="studio-input-group">
+                    <label class="studio-label">System prompt</label>
+                    <textarea class="studio-prompt-input" id="studio-prompt" placeholder="Describe brand aesthetic..."></textarea>
+                  </div>
+                  <button class="btn-generate" onclick="runAISimulation()">
+                    <span>COMPILE ASSETS</span>
+                    <i data-lucide="cpu" style="width: 14px; height: 14px;"></i>
+                  </button>
+                </div>
+                <div class="workspace-preview" id="studio-preview-area">
+                  <div class="preview-placeholder" id="studio-placeholder">
+                    <i data-lucide="scan-face" style="width: 40px; height: 40px;"></i>
+                    <span>Ready for compilation input.</span>
+                  </div>
+                  <div class="preview-output" id="studio-output">
+                    <div class="generated-logo-display">
+                      <div class="generated-shape" id="preview-glow-shape"></div>
+                    </div>
+                    <div class="generated-meta">
+                      <div class="meta-row">
+                        <span style="color: var(--text-silver);">EST. RATIO</span>
+                        <span id="meta-ratio" style="font-weight: 700;">1:1 Vector</span>
+                      </div>
+                      <div class="meta-row">
+                        <span style="color: var(--text-silver);">SWATCHES</span>
+                        <div class="color-swatches">
+                          <span class="swatch" style="background: #6D4AFF;"></span>
+                          <span class="swatch" style="background: #A78BFA;"></span>
+                          <span class="swatch" style="background: #050505;"></span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 2: Brand Vault -->
+          <div class="bento-card bento-brand-vault glass-panel" id="bento-brand-vault">
+            <div class="card-sheen"></div>
+            <div class="card-title-group">
+              <div class="card-icon"><i data-lucide="shield-check"></i></div>
+              <div class="card-name">Brand Vault</div>
+              <div class="card-tag">Secure Digital Assets</div>
+              <p class="bento-card-desc">Store, organize, and manage all brand assets in one secure location.</p>
+            </div>
+            
+            <div class="vault-navigation">
+              <span class="vault-tab active" onclick="switchVaultTab('logos')">LOGOS</span>
+              <span class="vault-tab" onclick="switchVaultTab('fonts')">FONTS</span>
+              <span class="vault-tab" onclick="switchVaultTab('colors')">PALETTES</span>
+            </div>
+
+            <div class="vault-viewer">
+              <!-- Logos Pane -->
+              <div class="vault-content-pane active" id="vault-logos">
+                <div class="vault-grid">
+                  <div class="vault-item">
+                    <div class="vault-item-preview"><img src="/assets/logo.png" alt="Primary Logo"></div>
+                    <span class="vault-item-name">Primary.png</span>
+                  </div>
+                  <div class="vault-item">
+                    <div class="vault-item-preview"><img src="/assets/logo.png" alt="Dark Logo" style="filter: brightness(0.2) invert(1);"></div>
+                    <span class="vault-item-name">Inverse.png</span>
+                  </div>
+                </div>
+              </div>
+              
+              <!-- Fonts Pane -->
+              <div class="vault-content-pane" id="vault-fonts">
+                <div class="vault-item" style="width: 100%;">
+                  <div class="vault-font-preview">Outfit Bold</div>
+                  <div class="vault-font-details">ABCDEFGHIJKLM<br>nopqrstuvwxyz 12345</div>
+                </div>
+              </div>
+
+              <!-- Colors Pane -->
+              <div class="vault-content-pane" id="vault-colors">
+                <div class="vault-grid">
+                  <div class="vault-item">
+                    <div class="vault-palette-swatch" style="background: #050505; width: 100%;"></div>
+                    <span class="vault-item-name">#050505</span>
+                  </div>
+                  <div class="vault-item">
+                    <div class="vault-palette-swatch" style="background: #6D4AFF; width: 100%;"></div>
+                    <span class="vault-item-name">#6D4AFF</span>
+                  </div>
+                  <div class="vault-item">
+                    <div class="vault-palette-swatch" style="background: #A78BFA; width: 100%;"></div>
+                    <span class="vault-item-name">#A78BFA</span>
+                  </div>
+                  <div class="vault-item">
+                    <div class="vault-palette-swatch" style="background: #F8F9FA; width: 100%;"></div>
+                    <span class="vault-item-name">#F8F9FA</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 3: Project Workspace -->
+          <div class="bento-card bento-project-workspace glass-panel" id="bento-project-workspace">
+            <div class="card-sheen"></div>
+            <div class="card-title-group">
+              <div class="card-icon"><i data-lucide="layers"></i></div>
+              <div class="card-name">Project Workspace</div>
+              <div class="card-tag">Real-Time Team Pipeline</div>
+              <p class="bento-card-desc">Manage projects, collaborate with teams, and track progress.</p>
+            </div>
+            
+            <div class="project-kanban">
+              <div class="kanban-col">
+                <div class="kanban-header">Sprint Pipelines</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Aethera Brand Spec</div>
+                  <div class="kanban-card-progress"><div class="kanban-card-fill" style="width: 90%;"></div></div>
+                  <div class="kanban-card-footer">
+                    <span>Active</span>
+                    <div class="kanban-avatar">A</div>
+                  </div>
+                </div>
+              </div>
+              
+              <div class="kanban-col">
+                <div class="kanban-header">Review Panel</div>
+                <div class="kanban-card">
+                  <div class="kanban-card-title">Synthetix UI Deck</div>
+                  <div class="kanban-card-progress"><div class="kanban-card-fill" style="width: 60%; background: var(--glow-lavender);"></div></div>
+                  <div class="kanban-card-footer">
+                    <span>Feedback</span>
+                    <div class="kanban-avatar">M</div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="kanban-col">
+                <div class="kanban-header">Complete</div>
+                <div class="kanban-card" style="opacity: 0.65;">
+                  <div class="kanban-card-title">Veloce Packaging</div>
+                  <div class="kanban-card-progress"><div class="kanban-card-fill" style="width: 100%; background: #10B981;"></div></div>
+                  <div class="kanban-card-footer">
+                    <span>Shipped</span>
+                    <div class="kanban-avatar">V</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Module 4: Creative Automation -->
+          <div class="bento-card bento-automation glass-panel" id="bento-automation">
+            <div class="card-sheen"></div>
+            <div class="card-title-group">
+              <div class="card-icon"><i data-lucide="workflow"></i></div>
+              <div class="card-name">Creative Automation</div>
+              <div class="card-tag">Idea to Execution Pipelines</div>
+              <p class="bento-card-desc">Automate repetitive design and branding workflows.</p>
+            </div>
+            
+            <div class="automation-flow" id="automation-flow">
+              <div class="flow-node active" id="node-idea">
+                <i data-lucide="lightbulb" style="width: 20px; height: 20px;"></i>
+                <span class="flow-node-label">Idea</span>
+              </div>
+              <div class="flow-connector active"><div class="flow-pulse"></div></div>
+              
+              <div class="flow-node" id="node-ai">
+                <i data-lucide="binary" style="width: 20px; height: 20px;"></i>
+                <span class="flow-node-label">AI ENGINE</span>
+              </div>
+              <div class="flow-connector"><div class="flow-pulse"></div></div>
+              
+              <div class="flow-node" id="node-system">
+                <i data-lucide="panels-top-left" style="width: 20px; height: 20px;"></i>
+                <span class="flow-node-label">System</span>
+              </div>
+              <div class="flow-connector"><div class="flow-pulse"></div></div>
+              
+              <div class="flow-node" id="node-growth">
+                <i data-lucide="trending-up" style="width: 20px; height: 20px;"></i>
+                <span class="flow-node-label">Growth</span>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 4 — {SERVICES EXPERIENCE} ================= -->
+    <section class="scene" id="scene-services">
+      <div class="scroller-content">
+        <div class="section-header">
+          <span class="section-label">OS Service Suite</span>
+          <h2 class="section-title text-gradient-purple">Comprehensive Creative Solutions</h2>
+          <p class="section-desc">Harness the combined power of human craftsmanship and cutting-edge artificial intelligence to scale your brand footprint.</p>
+        </div>
+
+        <div class="services-deck-container">
+          <!-- Filter Tabs -->
+          <div class="services-filter-bar">
+            <button class="services-filter-btn active" data-category="all">All Services (18)</button>
+            <button class="services-filter-btn" data-category="branding">Branding & Identity</button>
+            <button class="services-filter-btn" data-category="uiux">UI/UX & Web Design</button>
+            <button class="services-filter-btn" data-category="automation">Creative Automation</button>
+            <button class="services-filter-btn" data-category="strategy">Strategy & Presentation</button>
+          </div>
+
+          <!-- Services Grid -->
+          <div class="services-grid" id="services-grid">
+            <!-- 18 services will be programmatically populated to keep code clean and manageable -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 5 — {OUR WORK} ================= -->
+    <section class="scene" id="scene-work">
+      <div class="scroller-content">
+        <div class="section-header">
+          <span class="section-label">Case Studies</span>
+          <h2 class="section-title text-gradient-glow">Luxury Portfolio Gallery</h2>
+          <p class="section-desc">Explore flagship ecosystems, startup branding systems, and digital products launched through CYL OS.</p>
+        </div>
+
+        <div class="portfolio-grid">
+          <!-- Card 1 -->
+          <div class="portfolio-card glass-panel" id="work-1">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_xr.jpg" alt="Aethera Brand System" class="portfolio-img">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">Startup Branding</span>
+              <h3 class="portfolio-title">Aethera Brand System</h3>
+              <p class="portfolio-desc">An immersive, scandinavian-minimalist identity built for a deep-tech VR platform.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 2 -->
+          <div class="portfolio-card glass-panel" id="work-2">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_agency.jpg" alt="Veloce Packaging & Identity" class="portfolio-img" style="filter: hue-rotate(180deg) brightness(0.6);">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">Business Identity System</span>
+              <h3 class="portfolio-title">Veloce Packaging & Identity</h3>
+              <p class="portfolio-desc">Luxury packaging conceptualization merging physical sensory details with metallic finishes.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 3 -->
+          <div class="portfolio-card glass-panel" id="work-3">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_agency.jpg" alt="Synthetix AI Workspace" class="portfolio-img">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">UI/UX Project</span>
+              <h3 class="portfolio-title">Synthetix AI Workspace</h3>
+              <p class="portfolio-desc">A premium dark-themed web platform optimizing agency workflows via predictive layouts.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 4 -->
+          <div class="portfolio-card glass-panel" id="work-4">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_agency.jpg" alt="Neura Campaign Graphics" class="portfolio-img" style="filter: hue-rotate(90deg) brightness(0.6);">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">Marketing Campaign</span>
+              <h3 class="portfolio-title">Neura Global Campaign</h3>
+              <p class="portfolio-desc">Social templates and digital billboards executed using dynamic automation pipelines.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 5 -->
+          <div class="portfolio-card glass-panel" id="work-5">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_xr.jpg" alt="Lumina Smart Interface" class="portfolio-img" style="filter: hue-rotate(240deg) brightness(0.6);">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">Digital Product Design</span>
+              <h3 class="portfolio-title">Lumina Smart Interface</h3>
+              <p class="portfolio-desc">A seamless native app interface optimizing user accessibility and brand assets.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card 6 -->
+          <div class="portfolio-card glass-panel" id="work-6">
+            <div class="portfolio-beam"></div>
+            <div class="portfolio-img-wrapper">
+              <img src="/assets/ref_xr.jpg" alt="Aero Strategy Deck" class="portfolio-img" style="filter: hue-rotate(120deg) brightness(0.6);">
+            </div>
+            <div class="portfolio-info">
+              <span class="portfolio-tag">Creative Strategy Project</span>
+              <h3 class="portfolio-title">Aero Brand Architecture</h3>
+              <p class="portfolio-desc">Executive pitch deck planning and strategic positioning for enterprise scale.</p>
+              <div class="portfolio-arrow">
+                <span>VIEW CASE STUDY</span>
+                <i data-lucide="arrow-up-right" style="width: 14px; height: 14px;"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 6 — {IMPACT SECTION} ================= -->
+    <section class="scene" id="scene-impact">
+      <div class="scroller-content">
+        <div class="section-header">
+          <span class="section-label">Measurable Outcomes</span>
+          <h2 class="section-title text-gradient-purple">Business Acceleration Platform</h2>
+          <p class="section-desc">CYL OS delivers quantifiable growth. Witness the financial and operational impact on your enterprise.</p>
+        </div>
+
+        <div class="impact-grid">
+          <!-- Reduced branding costs -->
+          <div class="impact-card glass-panel" style="--metric-pct: 75%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="dollar-sign"></i></div>
+              <span class="impact-metric">-75%</span>
+            </div>
+            <div class="impact-details">
+              <h3>Reduced branding costs</h3>
+              <p>Eliminate bloated agency retainers and multi-tool subscriptions through asset automation.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Faster creative execution -->
+          <div class="impact-card glass-panel" style="--metric-pct: 90%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="zap"></i></div>
+              <span class="impact-metric">10x</span>
+            </div>
+            <div class="impact-details">
+              <h3>Faster creative execution</h3>
+              <p>Deploy social template packs, banners, and logo specs instantly instead of waiting days.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Improved workflow efficiency -->
+          <div class="impact-card glass-panel" style="--metric-pct: 92%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="trending-up"></i></div>
+              <span class="impact-metric">+92%</span>
+            </div>
+            <div class="impact-details">
+              <h3>Improved workflow efficiency</h3>
+              <p>Consolidate creative work, asset logs, and team check-ins into one operating system.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Stronger brand consistency -->
+          <div class="impact-card glass-panel" style="--metric-pct: 100%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="shield-check"></i></div>
+              <span class="impact-metric">100%</span>
+            </div>
+            <div class="impact-details">
+              <h3>Stronger brand consistency</h3>
+              <p>Ensure correct fonts, assets, and hex color swatches across every channel automatically.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Better collaboration -->
+          <div class="impact-card glass-panel" style="--metric-pct: 85%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="users"></i></div>
+              <span class="impact-metric">Real-time</span>
+            </div>
+            <div class="impact-details">
+              <h3>Better collaboration</h3>
+              <p>Keep design sprint boards, feedback tasks, and files unified for rapid, lock-step alignment.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Faster business growth -->
+          <div class="impact-card glass-panel" style="--metric-pct: 80%;">
+            <div class="impact-card-glow"></div>
+            <div class="impact-header">
+              <div class="impact-icon"><i data-lucide="rocket"></i></div>
+              <span class="impact-metric">3x</span>
+            </div>
+            <div class="impact-details">
+              <h3>Faster business growth</h3>
+              <p>Accelerate product launches and scale marketing presence without organizational friction.</p>
+              <div class="impact-bar-wrapper">
+                <div class="impact-bar-fill"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ================= SCENE 7 — {GLOBAL VISION} ================= -->
+    <section class="scene" id="scene-vision">
+      <div class="scroller-content">
+        <div class="section-header">
+          <span class="section-label">Visionary Future</span>
+          <h2 class="section-title text-gradient-glow">Next-Gen Creative Network</h2>
+          <p class="section-desc">A unified platform where creativity, branding, artificial intelligence, and business growth converge.</p>
+        </div>
+
+        <div class="vision-container">
+          <div class="vision-showcase">
+            <!-- World Map Canvas -->
+            <div class="world-map-wrapper">
+              <canvas id="map-canvas"></canvas>
+              <div class="map-stats">
+                <div class="map-stat-row">
+                  <span class="status-dot"></span>
+                  <span>SERVERS:</span>
+                  <span class="map-stat-value">GLOBAL CLUSTERS</span>
+                </div>
+                <div class="map-stat-row">
+                  <span>ACTIVE NODES:</span>
+                  <span class="map-stat-value">2,841 READY</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Pitch & Final Call-To-Action Panel -->
+            <div class="vision-pitch-card glass-panel">
+              <div class="pitch-badge">MISSION CYL</div>
+              <h3 class="pitch-title">From Idea to Identity</h3>
+              <p class="pitch-lead">Build, manage, and scale your brand through one intelligent ecosystem.</p>
+              
+              <div class="pitch-divider"></div>
+              
+              <div class="roadmap-grid-mini">
+                <div class="roadmap-card-mini">
+                  <i data-lucide="sparkles"></i>
+                  <div>
+                    <strong>AI Studio v2</strong>
+                    <span>Direct text-to-vector typography</span>
+                  </div>
+                </div>
+                <div class="roadmap-card-mini">
+                  <i data-lucide="shield-check"></i>
+                  <div>
+                    <strong>Brand Vault Sync</strong>
+                    <span>Decentralized asset ledger sync</span>
+                  </div>
+                </div>
+                <div class="roadmap-card-mini">
+                  <i data-lucide="users"></i>
+                  <div>
+                    <strong>Collaboration Hub</strong>
+                    <span>Multiplayer environments</span>
+                  </div>
+                </div>
+                <div class="roadmap-card-mini">
+                  <i data-lucide="smartphone"></i>
+                  <div>
+                    <strong>Mobile Apps</strong>
+                    <span>Asset management on iOS/Android</span>
+                  </div>
+                </div>
+              </div>
+
+              <div class="final-cta-btn-wrapper">
+                <button class="btn-primary final-btn" onclick="transitionToScene('welcome')" id="btn-final-enter">
+                  Start Building with CYL OS
+                  <i data-lucide="arrow-right-circle"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- Include GSAP libraries via CDN -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- JavaScript entry point -->
+  <script type="module" src="./src/main.js"></script>
+</body>
+</html>
