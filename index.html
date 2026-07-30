@@ -23,7 +23,7 @@
   <style>
     /* Navigation Bar Styling */
     header.os-navbar {
-      position: absolute;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -33,9 +33,9 @@
       justify-content: space-between;
       align-items: center;
       z-index: 100;
-      background: linear-gradient(180deg, rgba(5,5,5,0.8) 0%, transparent 100%);
-      backdrop-filter: blur(8px);
-      -webkit-backdrop-filter: blur(8px);
+      background: rgba(5, 5, 5, 0.75);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       border-bottom: 1px solid rgba(255, 255, 255, 0.03);
       opacity: 0;
       transform: translateY(-20px);
@@ -161,20 +161,20 @@
 
     <!-- Header Navigation -->
     <header class="os-navbar" id="os-header">
-      <a href="#" class="nav-logo-group" onclick="transitionToScene('welcome')">
+      <a href="#scene-welcome" class="nav-logo-group">
         <img src="/assets/logo.png" alt="CYL Logo" class="nav-logo">
         <span class="nav-brand-name">CYL OS</span>
       </a>
       <ul class="nav-links">
-        <li class="nav-link active" data-scene="welcome"><a href="#" onclick="transitionToScene('welcome')">Home</a></li>
-        <li class="nav-link" data-scene="problem-solution"><a href="#" onclick="transitionToScene('problem-solution')">Challenges</a></li>
-        <li class="nav-link" data-scene="bento"><a href="#" onclick="transitionToScene('bento')">Ecosystem</a></li>
-        <li class="nav-link" data-scene="services"><a href="#" onclick="transitionToScene('services')">Services</a></li>
-        <li class="nav-link" data-scene="work"><a href="#" onclick="transitionToScene('work')">Showcase</a></li>
-        <li class="nav-link" data-scene="impact"><a href="#" onclick="transitionToScene('impact')">Impact</a></li>
-        <li class="nav-link" data-scene="vision"><a href="#" onclick="transitionToScene('vision')">Vision</a></li>
+        <li class="nav-link active" data-scene="welcome"><a href="#scene-welcome">Home</a></li>
+        <li class="nav-link" data-scene="problem-solution"><a href="#scene-problem-solution">Challenges</a></li>
+        <li class="nav-link" data-scene="bento"><a href="#scene-bento">Ecosystem</a></li>
+        <li class="nav-link" data-scene="services"><a href="#scene-services">Services</a></li>
+        <li class="nav-link" data-scene="work"><a href="#scene-work">Showcase</a></li>
+        <li class="nav-link" data-scene="impact"><a href="#scene-impact">Impact</a></li>
+        <li class="nav-link" data-scene="vision"><a href="#scene-vision">Vision</a></li>
       </ul>
-      <a href="#" class="btn-primary nav-action-btn" onclick="transitionToScene('vision')">
+      <a href="#scene-vision" class="btn-primary nav-action-btn">
         ENTER CYL OS
       </a>
     </header>
@@ -250,18 +250,18 @@
         <p class="welcome-description">Businesses currently rely on multiple disconnected tools for branding, design, content creation, asset management, and collaboration. CYL OS brings these workflows together into a single platform powered by intelligent automation.</p>
         
         <div class="cta-group">
-          <a href="#" class="btn-primary" onclick="transitionToScene('problem-solution')" id="btn-enter-os">
+          <a href="#scene-problem-solution" class="btn-primary" id="btn-enter-os">
             Explore CYL OS
             <i data-lucide="terminal"></i>
           </a>
-          <a href="#" class="btn-secondary" onclick="transitionToScene('bento')" id="btn-explore-eco">
+          <a href="#scene-bento" class="btn-secondary" id="btn-explore-eco">
             View Platform Demo
             <i data-lucide="compass"></i>
           </a>
         </div>
       </div>
 
-      <div class="scroll-indicator visible" id="welcome-scroll-indicator" onclick="transitionToScene('problem-solution')">
+      <a href="#scene-problem-solution" class="scroll-indicator visible" id="welcome-scroll-indicator" style="text-decoration: none;">
         <span>Scroll or Click to Initialize OS</span>
         <div class="scroll-mouse">
           <div class="scroll-wheel"></div>
@@ -373,10 +373,10 @@
         </div>
 
         <div class="section-footer-cta">
-          <button class="btn-primary" onclick="transitionToScene('bento')">
+          <a href="#scene-bento" class="btn-primary" style="text-decoration: none;">
             EXPLORE THE ECOSYSTEM
             <i data-lucide="arrow-right"></i>
-          </button>
+          </a>
         </div>
       </div>
     </section>
@@ -935,10 +935,10 @@
               </div>
 
               <div class="final-cta-btn-wrapper">
-                <button class="btn-primary final-btn" onclick="transitionToScene('welcome')" id="btn-final-enter">
+                <a href="#scene-welcome" class="btn-primary final-btn" id="btn-final-enter" style="text-decoration: none;">
                   Start Building with CYL OS
                   <i data-lucide="arrow-right-circle"></i>
-                </button>
+                </a>
               </div>
             </div>
           </div>

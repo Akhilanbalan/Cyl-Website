@@ -22,33 +22,37 @@ function updateNavState(sceneId) {
   });
 }
 
-// Scene Transitions
 window.transitionToScene = function(sceneId) {
-  if (!scenes.includes(sceneId)) return;
-  
-  const currentScene = document.querySelector(`.scene.active`);
-  const targetScene = document.getElementById(`scene-${sceneId}`);
-  
-  if (currentScene && targetScene && currentScene !== targetScene) {
-    // Fade out current
-    currentScene.style.opacity = 0;
-    setTimeout(() => {
-      currentScene.classList.remove('active');
-      currentScene.style.transform = 'scale(0.95)';
-      
-      // Setup target
-      targetScene.classList.add('active');
-      // Force repaint
-      targetScene.offsetHeight;
-      
-      targetScene.style.opacity = 1;
-      targetScene.style.transform = 'scale(1)';
-      
-      currentSceneId = sceneId;
-      updateNavState(sceneId);
-    }, 500);
+  const target = document.getElementById(`scene-${sceneId}`);
+  if (target) {
+    target.scrollIntoView({ behavior: 'smooth' });
   }
 };
+
+function setupScrollObserver() {
+  const options = {
+    root: null,
+    rootMargin: '-30% 0px -60% 0px',
+    threshold: 0
+  };
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const id = entry.target.id.replace('scene-', '');
+        updateNavState(id);
+        currentSceneId = id;
+      }
+    });
+  }, options);
+  
+  const sections = document.querySelectorAll('.scene');
+  sections.forEach(s => {
+    if (s.id !== 'scene-loading') {
+      observer.observe(s);
+    }
+  });
+}
 
 // ----------------------------------------------------
 // 2. MOUSE CURSOR GLOW
@@ -317,20 +321,13 @@ function runLoadingTimeline() {
     ease: 'power2.in'
   })
   .to('#scene-loading', {
-    scale: 1.3,
-    opacity: 0,
-    duration: 1.0,
-    ease: 'power3.inOut'
-  }, '-=0.1')
-  .to('#scene-loading', {
-    visibility: 'hidden',
     onComplete: () => {
-      document.getElementById('scene-loading').classList.remove('active');
+      // Fade out loading screen overlay
+      const loadingScreen = document.getElementById('scene-loading');
+      if (loadingScreen) loadingScreen.classList.add('hidden');
       
-      // Reveal welcome scene
-      const welcome = document.getElementById('scene-welcome');
-      welcome.classList.add('active');
-      gsap.to(welcome, { opacity: 1, scale: 1, duration: 1.2, ease: 'power3.out' });
+      // Enable body scroll
+      document.body.classList.add('loaded');
       
       // Reveal navbar
       header.classList.add('visible');
@@ -345,6 +342,7 @@ function runLoadingTimeline() {
       initializeBentoWorkspace();
       initializeServicesDeck();
       initializeMapGlobe();
+      setupScrollObserver();
     }
   });
 }
@@ -687,53 +685,4 @@ function initializeMapGlobe() {
   drawMap();
 }
 
-// ----------------------------------------------------
-// 9. SCREEN SCROLL NAVIGATION (SCENE SWITCH ADVANCE)
-// ----------------------------------------------------
-let scrollTimeout = null;
-
-window.addEventListener('wheel', (e) => {
-  // Prevent fast scrolling triggers
-  if (scrollTimeout) return;
-  
-  // Ignore scroll triggers when in Scene 1 (Loading)
-  if (currentSceneId === 'loading') return;
-  
-  const activeScroller = document.querySelector(`.scene.active .scroller-content`);
-  if (activeScroller) {
-    // If inside a scrollable scene container, only advance when reaching limits
-    const isScrollDown = e.deltaY > 0;
-    const isAtBottom = activeScroller.scrollHeight - activeScroller.scrollTop <= activeScroller.clientHeight + 10;
-    const isAtTop = activeScroller.scrollTop === 0;
-    
-    if (isScrollDown && !isAtBottom) return;
-    if (!isScrollDown && !isAtTop) return;
-  }
-  
-  const currentIndex = scenes.indexOf(currentSceneId);
-  if (e.deltaY > 0 && currentIndex < scenes.length - 1) {
-    // Scroll Down -> Next Scene
-    scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 1200);
-    transitionToScene(scenes[currentIndex + 1]);
-  } else if (e.deltaY < 0 && currentIndex > 1) { // Don't scroll back to loading
-    // Scroll Up -> Prev Scene
-    scrollTimeout = setTimeout(() => { scrollTimeout = null; }, 1200);
-    transitionToScene(scenes[currentIndex - 1]);
-  }
-}, { passive: true });
-
-// Keyboard navigation
-window.addEventListener('keydown', (e) => {
-  if (currentSceneId === 'loading') return;
-  
-  const currentIndex = scenes.indexOf(currentSceneId);
-  if (e.key === 'ArrowDown' || e.key === 'PageDown') {
-    if (currentIndex < scenes.length - 1) {
-      transitionToScene(scenes[currentIndex + 1]);
-    }
-  } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-    if (currentIndex > 1) {
-      transitionToScene(scenes[currentIndex - 1]);
-    }
-  }
-});
+// Native scrolling enabled. Scrolling navigation handled via CSS smooth scrolling.
