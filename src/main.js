@@ -131,7 +131,8 @@ class Particle {
   draw() {
     ctx.beginPath();
     ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    ctx.fillStyle = 'rgba(109, 74, 255, 0.2)';
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    ctx.fillStyle = theme === 'dark' ? 'rgba(192, 132, 252, 0.25)' : 'rgba(109, 74, 255, 0.12)';
     ctx.fill();
   }
 }
@@ -151,6 +152,8 @@ function animateParticles() {
   });
   
   // Draw connecting lines
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  const lineColor = theme === 'dark' ? '124, 93, 255' : '109, 74, 255';
   for (let i = 0; i < particles.length; i++) {
     for (let j = i + 1; j < particles.length; j++) {
       const dx = particles[i].x - particles[j].x;
@@ -162,7 +165,7 @@ function animateParticles() {
         ctx.beginPath();
         ctx.moveTo(particles[i].x, particles[i].y);
         ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(109, 74, 255, ${alpha})`;
+        ctx.strokeStyle = `rgba(${lineColor}, ${alpha * (theme === 'dark' ? 1.0 : 0.4)})`;
         ctx.lineWidth = 0.8;
         ctx.stroke();
       }
@@ -347,8 +350,27 @@ function runLoadingTimeline() {
   });
 }
 
+// Theme Toggle Logic
+function initializeThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  if (!toggleBtn) return;
+  
+  toggleBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    
+    // Update Lucide icon highlights in navbar
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  });
+}
+
 // Start Loading and processing immediately on DOM load
 window.addEventListener('DOMContentLoaded', async () => {
+  initializeThemeToggle();
   await processLogoToTransparent();
   runLoadingTimeline();
 });
@@ -615,6 +637,11 @@ function initializeMapGlobe() {
     const colWidth = mapCanvas.width / columns;
     const rowHeight = mapCanvas.height / rows;
     
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const dotColor = theme === 'dark' ? 'rgba(192, 132, 252, 0.15)' : 'rgba(109, 74, 255, 0.08)';
+    const hubColor = theme === 'dark' ? 'rgb(192, 132, 252)' : 'rgb(109, 74, 255)';
+    const pulseColor = theme === 'dark' ? '192, 132, 252' : '109, 74, 255';
+    
     // Draw grid of dots
     for (let c = 0; c < columns; c++) {
       for (let r = 0; r < rows; r++) {
@@ -630,7 +657,7 @@ function initializeMapGlobe() {
         
         mctx.beginPath();
         mctx.arc(x, y, 1.5, 0, Math.PI * 2);
-        mctx.fillStyle = 'rgba(109, 74, 255, 0.12)';
+        mctx.fillStyle = dotColor;
         mctx.fill();
       }
     }
@@ -643,7 +670,7 @@ function initializeMapGlobe() {
       // Draw hub center node
       mctx.beginPath();
       mctx.arc(hx, hy, h.size, 0, Math.PI * 2);
-      mctx.fillStyle = 'var(--glow-lavender)';
+      mctx.fillStyle = hubColor;
       mctx.fill();
       
       // Draw pulse ripple ring
@@ -652,7 +679,7 @@ function initializeMapGlobe() {
       
       mctx.beginPath();
       mctx.arc(hx, hy, h.pulseRadius, 0, Math.PI * 2);
-      mctx.strokeStyle = `rgba(109, 74, 255, ${1 - h.pulseRadius / 35})`;
+      mctx.strokeStyle = `rgba(${pulseColor}, ${(1 - h.pulseRadius / 35) * (theme === 'dark' ? 0.6 : 0.3)})`;
       mctx.lineWidth = 1;
       mctx.stroke();
     });

@@ -4,7 +4,7 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 60px;
+  gap: 40px;
   z-index: 10;
 }
 
@@ -14,28 +14,28 @@
   display: flex;
   justify-content: space-between;
   position: relative;
-  margin-top: 40px;
+  margin-top: 24px;
 }
 
 /* Connecting line behind pipeline nodes */
 .pipeline-line-bg {
   position: absolute;
-  top: 32px;
+  top: 24px;
   left: 5%;
   width: 90%;
-  height: 2px;
-  background: rgba(255, 255, 255, 0.05);
+  height: 1.5px;
+  background: var(--border-color);
   z-index: 1;
 }
 
 .pipeline-line-progress {
   position: absolute;
-  top: 32px;
+  top: 24px;
   left: 5%;
   width: 0%;
-  height: 2px;
-  background: linear-gradient(90deg, var(--primary-purple), var(--glow-lavender));
-  box-shadow: 0 0 8px var(--glow-lavender);
+  height: 1.5px;
+  background: var(--primary-purple);
+  box-shadow: 0 0 6px var(--primary-purple);
   z-index: 2;
   transition: width 1.5s ease-in-out;
 }
@@ -51,101 +51,111 @@
 }
 
 .pipeline-node {
-  width: 64px;
-  height: 64px;
+  width: 48px;
+  height: 48px;
   border-radius: 50%;
-  background: var(--glass-bg);
-  border: 1px solid var(--glass-border);
-  color: var(--text-silver);
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
   display: flex;
   align-items: center;
   justify-content: center;
-  font-family: var(--font-display);
-  font-weight: 800;
-  font-size: 1.2rem;
-  margin-bottom: 20px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-  transition: var(--transition-smooth);
+  font-family: 'JetBrains Mono', monospace;
+  font-weight: 500;
+  font-size: 1.0rem;
+  margin-bottom: 16px;
+  box-shadow: var(--card-shadow);
+  transition: all 0.3s ease;
 }
 
 .pipeline-step:hover .pipeline-node, .pipeline-step.active .pipeline-node {
-  border-color: var(--glow-lavender);
-  color: var(--text-crystal);
-  box-shadow: 0 0 20px rgba(109, 74, 255, 0.4);
-  background: rgba(109, 74, 255, 0.15);
-  transform: scale(1.1);
+  border-color: var(--primary-purple);
+  color: var(--text-main);
+  box-shadow: var(--card-shadow-hover);
+  background: rgba(109, 74, 255, 0.08);
+  transform: scale(1.08);
 }
 
 .pipeline-title {
-  font-family: var(--font-display);
-  font-size: 1.15rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 1.05rem;
   font-weight: 700;
-  color: var(--text-crystal);
-  margin-bottom: 8px;
+  color: var(--text-main);
+  margin-bottom: 6px;
 }
 
 .pipeline-desc {
-  font-size: 0.8rem;
-  color: var(--text-silver);
+  font-size: 0.75rem;
+  color: var(--text-muted);
   line-height: 1.4;
-  opacity: 0.7;
 }
 
 /* Philosophy Pillars */
 .philosophy-pillars {
   display: grid;
   grid-template-columns: repeat(5, 1fr);
-  gap: 16px;
+  gap: 12px;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 16px;
 }
 
 .philosophy-card {
-  padding: 20px;
+  padding: 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 12px;
+  gap: 10px;
+  background: var(--bg-card);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: var(--card-shadow);
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1), border-color 0.3s ease;
+}
+
+.philosophy-card:hover {
+  transform: translateY(-4px) scale(1.03); /* Popup animation */
+  border-color: var(--border-color-hover);
+  box-shadow: var(--card-shadow-hover);
 }
 
 .philosophy-icon {
-  color: var(--glow-lavender);
+  color: var(--primary-purple);
 }
 
 .philosophy-name {
-  font-family: var(--font-display);
-  font-size: 0.95rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--text-crystal);
+  color: var(--text-main);
 }
 
 @media (max-width: 768px) {
   .pipeline-flow {
     flex-direction: column;
-    gap: 40px;
+    gap: 30px;
     align-items: flex-start;
     padding-left: 20px;
   }
   .pipeline-line-bg {
     top: 5%;
-    left: 50px;
-    width: 2px;
+    left: 42px;
+    width: 1.5px;
     height: 90%;
   }
   .pipeline-line-progress {
     top: 5%;
-    left: 50px;
-    width: 2px;
+    left: 42px;
+    width: 1.5px;
     height: 0%;
   }
   .pipeline-step {
     width: 100%;
     flex-direction: row;
     text-align: left;
-    gap: 20px;
+    gap: 16px;
   }
   .pipeline-node {
     margin-bottom: 0;

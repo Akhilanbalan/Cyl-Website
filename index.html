@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Resolve the theme before first paint so the page never flashes the wrong palette -->
+  <script>(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CYL OS — The AI-Powered Creative Operating System</title>
@@ -114,6 +116,43 @@
       font-size: 0.8rem;
     }
 
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .theme-toggle {
+      background: transparent;
+      border: 1px solid var(--border-color);
+      border-radius: 50%;
+      width: 34px;
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-main);
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .theme-toggle:hover {
+      background: var(--bg-card-hover);
+      border-color: var(--primary-purple);
+      transform: scale(1.05);
+    }
+
+    .theme-toggle svg {
+      width: 15px;
+      height: 15px;
+      stroke-width: 2.2;
+    }
+
+    [data-theme="light"] .theme-toggle .sun-icon { display: none; }
+    [data-theme="light"] .theme-toggle .moon-icon { display: block; }
+    [data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+    [data-theme="dark"] .theme-toggle .moon-icon { display: none; }
+
     /* Fixed ambient glows */
     .ambient-sphere {
       position: absolute;
@@ -146,6 +185,8 @@
   </style>
 </head>
 <body>
+  <!-- Minimal Dot Grid overlay -->
+  <div class="grid-bg-overlay"></div>
 
   <div id="app-container">
     
@@ -174,9 +215,15 @@
         <li class="nav-link" data-scene="impact"><a href="#scene-impact">Impact</a></li>
         <li class="nav-link" data-scene="vision"><a href="#scene-vision">Vision</a></li>
       </ul>
-      <a href="#scene-vision" class="btn-primary nav-action-btn">
-        ENTER CYL OS
-      </a>
+      <div class="nav-actions">
+        <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle dark mode">
+          <i class="sun-icon" data-lucide="sun"></i>
+          <i class="moon-icon" data-lucide="moon"></i>
+        </button>
+        <a href="#scene-vision" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
+          ENTER CYL OS
+        </a>
+      </div>
     </header>
 
     <!-- ================= SCENE 1 — {LOADING: CYL INITIALIZATION} ================= -->
@@ -250,11 +297,11 @@
         <p class="welcome-description">Businesses currently rely on multiple disconnected tools for branding, design, content creation, asset management, and collaboration. CYL OS brings these workflows together into a single platform powered by intelligent automation.</p>
         
         <div class="cta-group">
-          <a href="#scene-problem-solution" class="btn-primary" id="btn-enter-os">
+          <a href="#scene-problem-solution" class="btn-minimal-primary" id="btn-enter-os" style="text-decoration: none;">
             Explore CYL OS
             <i data-lucide="terminal"></i>
           </a>
-          <a href="#scene-bento" class="btn-secondary" id="btn-explore-eco">
+          <a href="#scene-bento" class="btn-minimal-secondary" id="btn-explore-eco" style="text-decoration: none;">
             View Platform Demo
             <i data-lucide="compass"></i>
           </a>
@@ -373,7 +420,7 @@
         </div>
 
         <div class="section-footer-cta">
-          <a href="#scene-bento" class="btn-primary" style="text-decoration: none;">
+          <a href="#scene-bento" class="btn-minimal-primary" style="text-decoration: none;">
             EXPLORE THE ECOSYSTEM
             <i data-lucide="arrow-right"></i>
           </a>
@@ -935,7 +982,7 @@
               </div>
 
               <div class="final-cta-btn-wrapper">
-                <a href="#scene-welcome" class="btn-primary final-btn" id="btn-final-enter" style="text-decoration: none;">
+                <a href="#scene-welcome" class="btn-minimal-primary final-btn" id="btn-final-enter" style="text-decoration: none;">
                   Start Building with CYL OS
                   <i data-lucide="arrow-right-circle"></i>
                 </a>
