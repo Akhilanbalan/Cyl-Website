@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+  <!-- Resolve the theme before first paint so the page never flashes the wrong palette -->
+  <script>(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>CYL OS — The Intelligent Creative Operating System</title>
@@ -48,10 +50,16 @@
       <li class="nav-link" data-scene="services"><a href="#scene-services">Services</a></li>
       <li class="nav-link" data-scene="metrics"><a href="#scene-metrics">Impact</a></li>
     </ul>
-    <a href="#scene-metrics" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
-      Launch Console
-      <i data-lucide="terminal"></i>
-    </a>
+    <div class="nav-actions" style="display: flex; align-items: center; gap: 12px;">
+      <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: 1px solid var(--border-color); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; transition: all 0.2s ease;">
+        <i class="sun-icon" data-lucide="sun" style="width: 15px; height: 15px; stroke-width: 2.2;"></i>
+        <i class="moon-icon" data-lucide="moon" style="width: 15px; height: 15px; stroke-width: 2.2;"></i>
+      </button>
+      <a href="#scene-metrics" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
+        Launch Console
+        <i data-lucide="terminal"></i>
+      </a>
+    </div>
   </header>
 
   <!-- ================= SCENE 2 — {WELCOME HERO} ================= -->

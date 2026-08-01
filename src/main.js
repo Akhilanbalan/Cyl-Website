@@ -61,16 +61,17 @@ class Star {
     
     // Draw star with tail
     const r = (1 - this.z / starCanvas.width) * 2;
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
     sctx.beginPath();
     sctx.arc(sx, sy, r, 0, Math.PI * 2);
-    sctx.fillStyle = this.color;
+    sctx.fillStyle = theme === 'dark' ? this.color : `rgba(109, 74, 255, ${0.3 + (1 - this.z / starCanvas.width) * 0.4})`;
     sctx.fill();
     
     if (this.px !== 0 && gravityValue < 0.8) {
       sctx.beginPath();
       sctx.moveTo(sx, sy);
       sctx.lineTo(this.px, this.py);
-      sctx.strokeStyle = `rgba(124, 93, 255, ${(1 - this.z / starCanvas.width) * 0.15})`;
+      sctx.strokeStyle = theme === 'dark' ? `rgba(124, 93, 255, ${(1 - this.z / starCanvas.width) * 0.15})` : `rgba(109, 74, 255, ${(1 - this.z / starCanvas.width) * 0.08})`;
       sctx.lineWidth = r / 2;
       sctx.stroke();
     }
@@ -86,7 +87,8 @@ for (let i = 0; i < starCount; i++) {
 }
 
 function animateStars() {
-  sctx.fillStyle = 'rgba(3, 3, 6, 0.2)'; // trail effect
+  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+  sctx.fillStyle = theme === 'dark' ? 'rgba(3, 3, 6, 0.2)' : 'rgba(248, 249, 251, 0.2)'; // trail effect
   sctx.fillRect(0, 0, starCanvas.width, starCanvas.height);
   
   stars.forEach(s => {
@@ -350,8 +352,26 @@ function setupScrollObserver() {
   sections.forEach(s => observer.observe(s));
 }
 
+// Theme Toggle Logic
+function initializeThemeToggle() {
+  const toggleBtn = document.getElementById('theme-toggle-btn');
+  if (!toggleBtn) return;
+  
+  toggleBtn.addEventListener('click', () => {
+    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('theme', nextTheme);
+    
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  });
+}
+
 // Start Loading and processing immediately on DOM load
 window.addEventListener('DOMContentLoaded', async () => {
+  initializeThemeToggle();
   await processLogoToTransparent();
   runLoadingTimeline();
 });
@@ -389,6 +409,11 @@ function initializeMapGlobe() {
     const colWidth = mapCanvas.width / columns;
     const rowHeight = mapCanvas.height / rows;
     
+    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
+    const dotColor = theme === 'dark' ? 'rgba(124, 93, 255, 0.12)' : 'rgba(109, 74, 255, 0.08)';
+    const hubColor = theme === 'dark' ? 'rgb(124, 93, 255)' : 'rgb(109, 74, 255)';
+    const pulseColor = theme === 'dark' ? '124, 93, 255' : '109, 74, 255';
+    
     // Draw grid of dots
     for (let c = 0; c < columns; c++) {
       for (let r = 0; r < rows; r++) {
@@ -403,7 +428,7 @@ function initializeMapGlobe() {
         
         mctx.beginPath();
         mctx.arc(x, y, 1.2, 0, Math.PI * 2);
-        mctx.fillStyle = 'rgba(124, 93, 255, 0.12)';
+        mctx.fillStyle = dotColor;
         mctx.fill();
       }
     }
@@ -415,7 +440,7 @@ function initializeMapGlobe() {
       
       mctx.beginPath();
       mctx.arc(hx, hy, h.size, 0, Math.PI * 2);
-      mctx.fillStyle = 'rgb(124, 93, 255)';
+      mctx.fillStyle = hubColor;
       mctx.fill();
       
       h.pulseRadius += 0.4;
@@ -423,7 +448,7 @@ function initializeMapGlobe() {
       
       mctx.beginPath();
       mctx.arc(hx, hy, h.pulseRadius, 0, Math.PI * 2);
-      mctx.strokeStyle = `rgba(124, 93, 255, ${1 - h.pulseRadius / 25})`;
+      mctx.strokeStyle = `rgba(${pulseColor}, ${(1 - h.pulseRadius / 25) * (theme === 'dark' ? 1.0 : 0.4)})`;
       mctx.lineWidth = 1;
       mctx.stroke();
     });

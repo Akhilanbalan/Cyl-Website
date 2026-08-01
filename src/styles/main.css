@@ -1,6 +1,33 @@
 @import url('https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700;800&display=swap');
 
-:root {
+:root[data-theme="light"] {
+  --bg-color: #F8F9FB;
+  --bg-card: rgba(255, 255, 255, 0.8);
+  --bg-card-hover: rgba(243, 244, 246, 0.95);
+  --border-color: rgba(0, 0, 0, 0.08);
+  --border-active: #6D4AFF;
+  
+  --text-main: #111827;
+  --text-muted: #5F6672;
+  
+  --neon-purple: #6D4AFF;
+  --neon-blue: #2563EB;
+  --neon-green: #059669;
+  --neon-red: #DC2626;
+  
+  --glow-purple: rgba(109, 74, 255, 0.06);
+  --glow-green: rgba(5, 150, 105, 0.06);
+  
+  --font-mono: 'Fira Code', monospace;
+  --font-sans: 'Inter', sans-serif;
+  
+  --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+  --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --grid-dots: rgba(0, 0, 0, 0.04);
+}
+
+:root[data-theme="dark"] {
   --bg-color: #030306;
   --bg-card: rgba(10, 10, 18, 0.7);
   --bg-card-hover: rgba(16, 16, 28, 0.8);
@@ -24,6 +51,7 @@
   --transition-fast: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-smooth: 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   --transition-slow: 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+  --grid-dots: rgba(124, 93, 255, 0.03);
 }
 
 /* Reset and general styling */
@@ -74,7 +102,7 @@ body.loaded {
   width: 100%;
   height: 100%;
   background-image: 
-    radial-gradient(rgba(124, 93, 255, 0.03) 1px, transparent 1px);
+    radial-gradient(var(--grid-dots) 1px, transparent 1px);
   background-size: 32px 32px;
   background-position: center;
   z-index: 0;
@@ -860,4 +888,20 @@ h1, h2, h3, h4, h5, h6 {
   .nav-links {
     display: none;
   }
+}
+
+/* Theme Toggle Button display logic */
+[data-theme="light"] .theme-toggle .sun-icon { display: none; }
+[data-theme="light"] .theme-toggle .moon-icon { display: block; }
+[data-theme="dark"] .theme-toggle .sun-icon { display: block; }
+[data-theme="dark"] .theme-toggle .moon-icon { display: none; }
+
+[data-theme="light"] img.nav-logo, [data-theme="light"] img.welcome-logo-img, [data-theme="light"] .vault-item img {
+  mix-blend-mode: multiply !important;
+  filter: none !important;
+}
+
+[data-theme="dark"] img.nav-logo, [data-theme="dark"] img.welcome-logo-img, [data-theme="dark"] .vault-item img {
+  mix-blend-mode: screen !important;
+  filter: drop-shadow(0 0 20px rgba(124, 93, 255, 0.4)) !important;
 }
