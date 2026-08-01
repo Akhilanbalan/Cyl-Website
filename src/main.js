@@ -1,635 +1,572 @@
+// CYL OS — Antigravity Workspace Controller
+
 // Initialize Lucide Icons
 if (window.lucide) {
   window.lucide.createIcons();
 }
 
 // ----------------------------------------------------
-// 1. STATE & GLOBAL CONFIG
+// 1. STARFIELD & PARTICLE SYSTEM
 // ----------------------------------------------------
-let currentSceneId = 'loading';
-const scenes = ['loading', 'welcome', 'problem-solution', 'bento', 'services', 'work', 'impact', 'vision'];
-const navLinks = document.querySelectorAll('.nav-link');
-const header = document.getElementById('os-header');
+const starCanvas = document.getElementById('starfield-canvas');
+const sctx = starCanvas.getContext('2d');
 
-// Initialize active nav state helper
-function updateNavState(sceneId) {
-  navLinks.forEach(link => {
-    if (link.getAttribute('data-scene') === sceneId) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
+let stars = [];
+const starCount = 150;
+let gravityValue = 1.0; // 0.0 (Zero-G) to 1.0 (Earth gravity)
+
+function resizeStarCanvas() {
+  starCanvas.width = window.innerWidth;
+  starCanvas.height = window.innerHeight;
 }
+resizeStarCanvas();
+window.addEventListener('resize', resizeStarCanvas);
 
-window.transitionToScene = function(sceneId) {
-  const target = document.getElementById(`scene-${sceneId}`);
-  if (target) {
-    target.scrollIntoView({ behavior: 'smooth' });
-  }
-};
-
-function setupScrollObserver() {
-  const options = {
-    root: null,
-    rootMargin: '-30% 0px -60% 0px',
-    threshold: 0
-  };
-  
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        const id = entry.target.id.replace('scene-', '');
-        updateNavState(id);
-        currentSceneId = id;
-      }
-    });
-  }, options);
-  
-  const sections = document.querySelectorAll('.scene');
-  sections.forEach(s => {
-    if (s.id !== 'scene-loading') {
-      observer.observe(s);
-    }
-  });
-}
-
-// ----------------------------------------------------
-// 2. MOUSE CURSOR GLOW
-// ----------------------------------------------------
-const cursorGlow = document.getElementById('cursor-glow');
-let mouseX = window.innerWidth / 2;
-let mouseY = window.innerHeight / 2;
-let currentX = mouseX;
-let currentY = mouseY;
-
-window.addEventListener('mousemove', (e) => {
-  mouseX = e.clientX;
-  mouseY = e.clientY;
-});
-
-// Smoothly follow cursor with interpolation (lerp)
-function updateCursor() {
-  const dx = mouseX - currentX;
-  const dy = mouseY - currentY;
-  
-  currentX += dx * 0.1;
-  currentY += dy * 0.1;
-  
-  if (cursorGlow) {
-    cursorGlow.style.left = `${currentX}px`;
-    cursorGlow.style.top = `${currentY}px`;
-  }
-  
-  requestAnimationFrame(updateCursor);
-}
-requestAnimationFrame(updateCursor);
-
-// ----------------------------------------------------
-// 3. CANVAS NEURAL NETWORK
-// ----------------------------------------------------
-const bgCanvas = document.getElementById('bg-canvas');
-const ctx = bgCanvas.getContext('2d');
-let particles = [];
-const particleCount = 60;
-const connectDist = 120;
-
-function resizeCanvas() {
-  bgCanvas.width = window.innerWidth;
-  bgCanvas.height = window.innerHeight;
-}
-resizeCanvas();
-window.addEventListener('resize', resizeCanvas);
-
-class Particle {
+class Star {
   constructor() {
-    this.x = Math.random() * bgCanvas.width;
-    this.y = Math.random() * bgCanvas.height;
-    this.vx = (Math.random() - 0.5) * 0.4;
-    this.vy = (Math.random() - 0.5) * 0.4;
-    this.radius = Math.random() * 2 + 1;
+    this.reset();
+    this.z = Math.random() * starCanvas.width;
+  }
+  
+  reset() {
+    this.x = (Math.random() - 0.5) * starCanvas.width;
+    this.y = (Math.random() - 0.5) * starCanvas.height;
+    this.z = starCanvas.width;
+    this.px = 0;
+    this.py = 0;
+    this.color = `rgba(${130 + Math.random() * 50}, ${110 + Math.random() * 50}, 255, ${0.4 + Math.random() * 0.6})`;
   }
   
   update() {
-    this.x += this.vx;
-    this.y += this.vy;
+    // Warp speed increases when gravity decreases (zero-g mode warping)
+    const speed = (2 - gravityValue) * 1.5;
+    this.z -= speed;
     
-    // Bounds check
-    if (this.x < 0 || this.x > bgCanvas.width) this.vx *= -1;
-    if (this.y < 0 || this.y > bgCanvas.height) this.vy *= -1;
-    
-    // Mouse interaction
-    const dx = mouseX - this.x;
-    const dy = mouseY - this.y;
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    if (dist < 150) {
-      this.x -= dx * 0.02;
-      this.y -= dy * 0.02;
+    if (this.z <= 0) {
+      this.reset();
     }
   }
   
   draw() {
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.radius, 0, Math.PI * 2);
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    ctx.fillStyle = theme === 'dark' ? 'rgba(192, 132, 252, 0.25)' : 'rgba(109, 74, 255, 0.12)';
-    ctx.fill();
-  }
-}
-
-// Populate particles
-for (let i = 0; i < particleCount; i++) {
-  particles.push(new Particle());
-}
-
-function animateParticles() {
-  ctx.clearRect(0, 0, bgCanvas.width, bgCanvas.height);
-  
-  // Update and draw particles
-  particles.forEach(p => {
-    p.update();
-    p.draw();
-  });
-  
-  // Draw connecting lines
-  const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-  const lineColor = theme === 'dark' ? '124, 93, 255' : '109, 74, 255';
-  for (let i = 0; i < particles.length; i++) {
-    for (let j = i + 1; j < particles.length; j++) {
-      const dx = particles[i].x - particles[j].x;
-      const dy = particles[i].y - particles[j].y;
-      const dist = Math.sqrt(dx*dx + dy*dy);
-      
-      if (dist < connectDist) {
-        const alpha = (1 - dist / connectDist) * 0.12;
-        ctx.beginPath();
-        ctx.moveTo(particles[i].x, particles[i].y);
-        ctx.lineTo(particles[j].x, particles[j].y);
-        ctx.strokeStyle = `rgba(${lineColor}, ${alpha * (theme === 'dark' ? 1.0 : 0.4)})`;
-        ctx.lineWidth = 0.8;
-        ctx.stroke();
-      }
-    }
-  }
-  
-  requestAnimationFrame(animateParticles);
-}
-requestAnimationFrame(animateParticles);
-
-// ----------------------------------------------------
-// 4. LOGO PROCESSOR (DYNAMIC BACKGROUND REMOVAL)
-// ----------------------------------------------------
-function processLogoToTransparent() {
-  return new Promise((resolve) => {
-    const rawImg = new Image();
-    rawImg.src = '/assets/logo.png';
-    rawImg.onload = () => {
-      const canvas = document.createElement('canvas');
-      const ctx = canvas.getContext('2d');
-      canvas.width = rawImg.naturalWidth;
-      canvas.height = rawImg.naturalHeight;
-      ctx.drawImage(rawImg, 0, 0);
-      
-      const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-      const data = imgData.data;
-      
-      // Get background color from top-left pixel (cream off-white)
-      const bgR = data[0];
-      const bgG = data[1];
-      const bgB = data[2];
-      
-      // Threshold distance to remove off-white background cleanly
-      const threshold = 40;
-      
-      for (let i = 0; i < data.length; i += 4) {
-        const r = data[i];
-        const g = data[i + 1];
-        const b = data[i + 2];
-        
-        const dist = Math.sqrt(
-          Math.pow(r - bgR, 2) +
-          Math.pow(g - bgG, 2) +
-          Math.pow(b - bgB, 2)
-        );
-        
-        if (dist < threshold) {
-          data[i + 3] = 0; // Make transparent
-        } else if (dist < threshold + 15) {
-          // Smooth antialiased edges
-          const ratio = (dist - threshold) / 15;
-          data[i + 3] = Math.floor(ratio * 255);
-        }
-      }
-      
-      ctx.putImageData(imgData, 0, 0);
-      const transparentDataUrl = canvas.toDataURL('image/png');
-      
-      // Proactively replace all instances on the page
-      const logoTargets = document.querySelectorAll('.nav-logo, .loading-logo-img, .welcome-logo-img, .taskbar-logo, .final-logo-img, .vault-item-preview img');
-      logoTargets.forEach(el => {
-        el.src = transparentDataUrl;
-      });
-      
-      resolve(transparentDataUrl);
-    };
-    rawImg.onerror = () => {
-      console.warn("Logo failed to load locally; resolving immediately.");
-      resolve(null);
-    };
-  });
-}
-
-// ----------------------------------------------------
-// 5. SCENE 1: INITIALIZATION TIMELINE
-// ----------------------------------------------------
-function runLoadingTimeline() {
-  const tl = gsap.timeline();
-  
-  const loaderCircle = document.getElementById('loader-circle-fill');
-  const percentageTxt = document.getElementById('loader-percentage');
-  const statusTxt = document.getElementById('loading-status-text');
-  
-  const statusMessages = [
-    { pct: 0, text: 'Initializing CYL OS' },
-    { pct: 25, text: 'Loading AI Studio' },
-    { pct: 50, text: 'Connecting Brand Vault' },
-    { pct: 75, text: 'Preparing Creative Workspace' },
-    { pct: 100, text: 'System ready.' }
-  ];
-  
-  let currentMsgIndex = 0;
-  let progressObj = { value: 0 };
-  
-  // Set initial status text
-  statusTxt.textContent = statusMessages[0].text;
-  gsap.to(statusTxt, { opacity: 1, y: 0, duration: 0.5 });
-  
-  // Animate progress values
-  tl.to(progressObj, {
-    value: 100,
-    duration: 4.5,
-    ease: 'power2.inOut',
-    onUpdate: () => {
-      const pct = Math.floor(progressObj.value);
-      percentageTxt.textContent = `${pct}%`;
-      
-      // Update SVG circular border stroke offset
-      // Circumference = 2 * PI * r (r=110) = 691.15
-      const offset = 691 - (pct / 100) * 691;
-      if (loaderCircle) loaderCircle.style.strokeDashoffset = offset;
-      
-      // Update status logs based on percentage ticks
-      if (currentMsgIndex < statusMessages.length - 1 && pct >= statusMessages[currentMsgIndex + 1].pct) {
-        currentMsgIndex++;
-        const nextText = statusMessages[currentMsgIndex].text;
-        
-        gsap.to(statusTxt, {
-          opacity: 0,
-          y: -10,
-          duration: 0.2,
-          onComplete: () => {
-            statusTxt.textContent = nextText;
-            gsap.to(statusTxt, { opacity: 1, y: 0, duration: 0.3 });
-          }
-        });
-      }
-    }
-  });
-
-  // Reveal processed logo inside glass sphere, fade out line-drawing SVG
-  tl.to('#loading-logo-img', {
-    opacity: 1,
-    duration: 1.0,
-    ease: 'power2.out'
-  }, '-=1.2')
-  .to('#loading-logo-svg', {
-    opacity: 0,
-    duration: 0.8,
-    ease: 'power2.out'
-  }, '-=1.2');
-  
-  // Sweep reflection
-  tl.to('#loading-light-sweep', {
-    duration: 1.5,
-    onStart: () => {
-      const sweep = document.getElementById('loading-light-sweep');
-      if (sweep) sweep.style.animation = 'sweepEffect 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards';
-    }
-  }, '-=0.8');
-
-  // Shrink and expand warp transition portal
-  tl.to('.loader-orb-system', {
-    scale: 0.9,
-    duration: 0.5,
-    ease: 'power2.in'
-  })
-  .to('#scene-loading', {
-    onComplete: () => {
-      // Fade out loading screen overlay
-      const loadingScreen = document.getElementById('scene-loading');
-      if (loadingScreen) loadingScreen.classList.add('hidden');
-      
-      // Enable body scroll
-      document.body.classList.add('loaded');
-      
-      // Reveal navbar
-      header.classList.add('visible');
-      
-      // Text reveal animations for Welcome
-      gsap.to('.welcome-headline', { y: 0, duration: 1.2, ease: 'power4.out', delay: 0.2 });
-      gsap.to('.welcome-sub-headline', { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.5 });
-      gsap.to('.welcome-description', { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.7 });
-      gsap.to('.cta-group', { opacity: 1, y: 0, duration: 1.0, ease: 'power3.out', delay: 0.9 });
-      
-      // Load interactive tools
-      initializeBentoWorkspace();
-      initializeServicesDeck();
-      initializeMapGlobe();
-      setupScrollObserver();
-    }
-  });
-}
-
-// Theme Toggle Logic
-function initializeThemeToggle() {
-  const toggleBtn = document.getElementById('theme-toggle-btn');
-  if (!toggleBtn) return;
-  
-  toggleBtn.addEventListener('click', () => {
-    const currentTheme = document.documentElement.getAttribute('data-theme') || 'dark';
-    const nextTheme = currentTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.setAttribute('data-theme', nextTheme);
-    localStorage.setItem('theme', nextTheme);
+    const cx = starCanvas.width / 2;
+    const cy = starCanvas.height / 2;
     
-    // Update Lucide icon highlights in navbar
-    if (window.lucide) {
-      window.lucide.createIcons();
+    // Project 3D coordinates to 2D
+    const sx = (this.x / this.z) * cx + cx;
+    const sy = (this.y / this.z) * cy + cy;
+    
+    if (sx < 0 || sx > starCanvas.width || sy < 0 || sy > starCanvas.height) {
+      return;
     }
-  });
+    
+    // Draw star with tail
+    const r = (1 - this.z / starCanvas.width) * 2;
+    sctx.beginPath();
+    sctx.arc(sx, sy, r, 0, Math.PI * 2);
+    sctx.fillStyle = this.color;
+    sctx.fill();
+    
+    if (this.px !== 0 && gravityValue < 0.8) {
+      sctx.beginPath();
+      sctx.moveTo(sx, sy);
+      sctx.lineTo(this.px, this.py);
+      sctx.strokeStyle = `rgba(124, 93, 255, ${(1 - this.z / starCanvas.width) * 0.15})`;
+      sctx.lineWidth = r / 2;
+      sctx.stroke();
+    }
+    
+    this.px = sx;
+    this.py = sy;
+  }
 }
 
-// Start Loading and processing immediately on DOM load
-window.addEventListener('DOMContentLoaded', async () => {
-  initializeThemeToggle();
-  await processLogoToTransparent();
-  runLoadingTimeline();
+// Populate stars
+for (let i = 0; i < starCount; i++) {
+  stars.push(new Star());
+}
+
+function animateStars() {
+  sctx.fillStyle = 'rgba(3, 3, 5, 0.2)'; // trail effect
+  sctx.fillRect(0, 0, starCanvas.width, starCanvas.height);
+  
+  stars.forEach(s => {
+    s.update();
+    s.draw();
+  });
+  
+  requestAnimationFrame(animateStars);
+}
+requestAnimationFrame(animateStars);
+
+// ----------------------------------------------------
+// 2. ANTIGRAVITY ENGINE: INTERACTIVE COCKPIT FLOATING
+// ----------------------------------------------------
+const commandDeck = document.getElementById('command-deck-container');
+const panels = document.querySelectorAll('.glass-ide-panel');
+
+let time = 0;
+let mouseX = 0;
+let mouseY = 0;
+
+window.addEventListener('mousemove', (e) => {
+  mouseX = (e.clientX - window.innerWidth / 2) / (window.innerWidth / 2);
+  mouseY = (e.clientY - window.innerHeight / 2) / (window.innerHeight / 2);
 });
 
-// ----------------------------------------------------
-// 5. SCENE 3: BENTO GRID INTERACTIVE OS
-// ----------------------------------------------------
-function initializeBentoWorkspace() {
-  // Clock widget
-  setInterval(() => {
-    const clock = document.getElementById('os-clock');
-    if (clock) {
-      const now = new Date();
-      clock.textContent = now.toTimeString().split(' ')[0];
-    }
-  }, 1000);
+function applyZeroGPhysics() {
+  time += 0.02;
   
-  // Flat sheen hover mouse tracking (no 3D tilt)
-  const bentoCards = document.querySelectorAll('.bento-card, .service-card, .portfolio-card');
-  bentoCards.forEach(card => {
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      
-      // Sheen tracking
-      card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
-      card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-    });
+  // Drift factor: higher drift when gravityValue is lower
+  const drift = (1 - gravityValue);
+  
+  panels.forEach((panel, idx) => {
+    if (drift === 0) {
+      panel.style.transform = 'none';
+      return;
+    }
+    
+    // Each panel oscillates on a different frequency and amplitude
+    const ampX = (10 + idx * 4) * drift;
+    const ampY = (15 + idx * 5) * drift;
+    const rotAmp = (1.5 + idx * 0.5) * drift;
+    
+    const x = Math.sin(time + idx * 1.5) * ampX + (mouseX * -15 * drift);
+    const y = Math.cos(time * 0.8 + idx * 2) * ampY + (mouseY * -20 * drift);
+    const rot = Math.sin(time * 0.5 + idx) * rotAmp;
+    
+    panel.style.transform = `translate(${x}px, ${y}px) rotate(${rot}deg)`;
+    panel.style.boxShadow = `0 ${8 + y/2}px ${32 + Math.abs(x)}px rgba(124, 93, 255, ${0.1 + drift * 0.08})`;
   });
   
-  // Loop Creative Automation flow pulses automatically
-  let nodeIndex = 0;
-  const flowNodes = ['node-idea', 'node-ai', 'node-system', 'node-growth'];
-  const connectors = document.querySelectorAll('.automation-flow .flow-connector');
-  
-  setInterval(() => {
-    // Reset all nodes
-    flowNodes.forEach(id => {
-      document.getElementById(id).classList.remove('active');
-    });
-    connectors.forEach(c => c.classList.remove('active'));
+  requestAnimationFrame(applyZeroGPhysics);
+}
+requestAnimationFrame(applyZeroGPhysics);
+
+// Gravity Slider controls
+const gravitySlider = document.getElementById('gravity-slider-input');
+const gravityValLabel = document.getElementById('gravity-slider-val');
+
+if (gravitySlider) {
+  gravitySlider.addEventListener('input', (e) => {
+    const val = parseInt(e.target.value);
+    gravityValLabel.textContent = `${val}%`;
+    gravityValue = val / 100;
     
-    // Activate current node and next connector
-    const currentNode = document.getElementById(flowNodes[nodeIndex]);
-    if (currentNode) currentNode.classList.add('active');
-    
-    if (nodeIndex > 0 && connectors[nodeIndex - 1]) {
-      connectors[nodeIndex - 1].classList.add('active');
+    // Log change
+    if (val === 0) {
+      appendTerminalLog('Zero-G warning: Cabin structures decoupled. Starfield warp factor: MAX.', 'warn');
+    } else if (val === 100) {
+      appendTerminalLog('Gravity matrix loaded. Grid structures locked.', 'system');
+    } else {
+      appendTerminalLog(`Gravity level synchronized: ${val}%`, 'info');
     }
-    
-    nodeIndex = (nodeIndex + 1) % flowNodes.length;
-  }, 2000);
+  });
 }
 
-// AI Studio Simulator
-window.runAISimulation = function() {
-  const goal = document.getElementById('studio-goal-select').value;
-  const prompt = document.getElementById('studio-prompt').value || 'Premium corporate system';
-  const placeholder = document.getElementById('studio-placeholder');
-  const output = document.getElementById('studio-output');
-  const previewGlow = document.getElementById('preview-glow-shape');
-  const ratioMeta = document.getElementById('meta-ratio');
+// ----------------------------------------------------
+// 3. SECURE SHELL TERMINAL LOGGING & COMMANDS
+// ----------------------------------------------------
+const shellInput = document.getElementById('terminal-shell-input');
+const logBox = document.getElementById('terminal-log-box');
+
+function appendTerminalLog(text, type = 'info') {
+  if (!logBox) return;
+  const entry = document.createElement('div');
+  entry.className = `log-entry ${type}`;
   
-  // Show Loading inside preview
-  placeholder.innerHTML = `<i data-lucide="loader" class="animate-spin" style="width: 40px; height: 40px; color: var(--glow-lavender);"></i><span>COMPILING BRAND NEURAL MODEL...</span>`;
-  if (window.lucide) window.lucide.createIcons();
+  const now = new Date();
+  const timeStr = now.toTimeString().split(' ')[0];
+  entry.textContent = `[${timeStr}] ${text}`;
   
-  output.classList.remove('active');
-  
-  setTimeout(() => {
-    placeholder.style.display = 'none';
-    output.classList.add('active');
-    
-    // Vary results based on selected goal
-    if (goal === 'logo') {
-      previewGlow.style.borderRadius = '50%';
-      previewGlow.style.background = 'conic-gradient(from 0deg, var(--primary-purple), var(--glow-lavender), var(--primary-purple))';
-      ratioMeta.textContent = '1:1 Vector SVG';
-    } else if (goal === 'guidelines') {
-      previewGlow.style.borderRadius = '8px';
-      previewGlow.style.background = 'linear-gradient(135deg, var(--glow-lavender) 0%, var(--primary-purple) 100%)';
-      ratioMeta.textContent = 'Grid System Specs';
-    } else {
-      previewGlow.style.borderRadius = '30% 70% 70% 30% / 30% 30% 70% 70%';
-      previewGlow.style.background = 'radial-gradient(circle, var(--glow-lavender) 0%, var(--primary-purple) 100%)';
-      ratioMeta.textContent = 'HSL Custom Hex';
+  logBox.appendChild(entry);
+  logBox.scrollTop = logBox.scrollHeight;
+}
+
+if (shellInput) {
+  shellInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+      const cmd = shellInput.value.trim();
+      shellInput.value = '';
+      if (!cmd) return;
+      
+      appendTerminalLog(`$ ${cmd}`, 'system');
+      processShellCommand(cmd);
     }
-  }, 2200);
+  });
+}
+
+function processShellCommand(commandString) {
+  const parts = commandString.split(' ');
+  const cmd = parts[0].toLowerCase();
+  const args = parts.slice(1);
+  
+  switch(cmd) {
+    case 'help':
+      appendTerminalLog('Commands available:', 'info');
+      appendTerminalLog('  help             Show instructions', 'info');
+      appendTerminalLog('  clear            Clear log screen', 'info');
+      appendTerminalLog('  gravity <num>    Set gravity value (0-100)', 'info');
+      appendTerminalLog('  compile          Re-process vector assets', 'info');
+      appendTerminalLog('  status           Print KERNEL resources status', 'info');
+      appendTerminalLog('  agent <name>     Toggle subagent status', 'info');
+      break;
+    case 'clear':
+      if (logBox) logBox.innerHTML = '';
+      break;
+    case 'gravity':
+      const gval = parseInt(args[0]);
+      if (isNaN(gval) || gval < 0 || gval > 100) {
+        appendTerminalLog('Error: gravity must be a number between 0 and 100', 'err');
+      } else {
+        if (gravitySlider) {
+          gravitySlider.value = gval;
+          gravityValLabel.textContent = `${gval}%`;
+        }
+        gravityValue = gval / 100;
+        appendTerminalLog(`Gravity level synchronized: ${gval}%`, 'info');
+      }
+      break;
+    case 'compile':
+      const statusIndicator = document.getElementById('compiling-indicator');
+      const compText = document.getElementById('compiler-status');
+      if (statusIndicator) statusIndicator.className = 'status-indicator compiling';
+      if (compText) compText.textContent = 'KERNEL: RECOMPILING...';
+      
+      appendTerminalLog('[COMPILER] Refreshing canvas logo vectors...', 'info');
+      setTimeout(() => {
+        if (statusIndicator) statusIndicator.className = 'status-indicator';
+        if (compText) compText.textContent = 'KERNEL: ACTIVE';
+        appendTerminalLog('[COMPILER] Vector asset processing complete. Cleaned logo overlays.', 'info');
+      }, 1500);
+      break;
+    case 'status':
+      appendTerminalLog('CYL OS Status Report:', 'info');
+      appendTerminalLog(`  Active core theme: ${document.documentElement.getAttribute('data-theme')}`, 'info');
+      appendTerminalLog('  Uptime: 99.99%', 'info');
+      appendTerminalLog('  Network socket: SECURE SSH', 'info');
+      appendTerminalLog(`  Damping gravity: ${gravityValue * 100}%`, 'info');
+      break;
+    case 'agent':
+      if (!args[0]) {
+        appendTerminalLog('Error: specify agent name', 'err');
+      } else {
+        appendTerminalLog(`Agent "${args[0]}" command triggered. Toggled status.`, 'info');
+      }
+      break;
+    default:
+      appendTerminalLog(`Shell error: command not recognized: "${cmd}". Type "help" for instructions.`, 'err');
+  }
+}
+
+// ----------------------------------------------------
+// 4. WORKSPACE TAB CONTROLLER & EXPLORER
+// ----------------------------------------------------
+const tabsBar = document.getElementById('tabs-bar');
+const panes = document.querySelectorAll('.viewport-pane');
+const treeFiles = document.querySelectorAll('.tree-file');
+
+const tabIcons = {
+  'welcome': 'file-text',
+  'ai-studio': 'cpu',
+  'globe': 'globe',
+  'vault': 'archive',
+  'metrics': 'activity'
 };
 
-// Brand Vault Tab Switcher
-window.switchVaultTab = function(tabName) {
-  // Tabs
-  const tabs = document.querySelectorAll('.vault-tab');
-  tabs.forEach(tab => {
-    if (tab.textContent.toLowerCase() === tabName) {
+const tabLabels = {
+  'welcome': 'WELCOME.md',
+  'ai-studio': 'ai_studio.py',
+  'globe': 'map_globe.canvas',
+  'vault': 'brand_vault.json',
+  'metrics': 'metrics_log.sh'
+};
+
+window.loadTab = function(tabId) {
+  // Update tree active selection
+  treeFiles.forEach(tf => {
+    if (tf.getAttribute('data-target') === tabId) {
+      tf.classList.add('active');
+    } else {
+      tf.classList.remove('active');
+    }
+  });
+  
+  // Manage tabs bar tags
+  let existingTab = tabsBar.querySelector(`[data-pane="${tabId}"]`);
+  if (!existingTab) {
+    // Generate new tab tag
+    const tabTag = document.createElement('div');
+    tabTag.className = 'viewport-tab active';
+    tabTag.setAttribute('data-pane', tabId);
+    tabTag.innerHTML = `
+      <i data-lucide="${tabIcons[tabId]}" class="tree-icon"></i>
+      <span>${tabLabels[tabId]}</span>
+      <i data-lucide="x" class="viewport-tab-close" onclick="closeTab('${tabId}', event)"></i>
+    `;
+    tabsBar.appendChild(tabTag);
+    if (window.lucide) window.lucide.createIcons();
+  }
+  
+  // Set active tabs tags
+  tabsBar.querySelectorAll('.viewport-tab').forEach(tab => {
+    if (tab.getAttribute('data-pane') === tabId) {
       tab.classList.add('active');
     } else {
       tab.classList.remove('active');
     }
   });
   
-  // Content Panes
-  const panes = document.querySelectorAll('.vault-content-pane');
-  panes.forEach(pane => {
-    if (pane.id === `vault-${tabName}`) {
-      pane.classList.add('active');
+  // Switch pane content
+  panes.forEach(p => {
+    if (p.getAttribute('id') === `pane-${tabId}`) {
+      p.classList.add('active');
     } else {
-      pane.classList.remove('active');
+      p.classList.remove('active');
     }
   });
-};
-
-// ----------------------------------------------------
-// 6. SCENE 4: SERVICE DECK PROGRAMMATIC GENERATION
-// ----------------------------------------------------
-const servicesData = [
-  { name: 'Brand Identity Design', category: 'branding', icon: 'award', desc: 'Crafting premium corporate guidelines, styles, and typography systems.' },
-  { name: 'Logo Design', category: 'branding', icon: 'fingerprint', desc: 'Signature high-readability vector logomarks matching original vectors.' },
-  { name: 'Graphic Design', category: 'automation', icon: 'pen-tool', desc: 'Standard production vector formats and visual communication materials.' },
-  { name: 'Social Media Design', category: 'automation', icon: 'share-2', desc: 'Dynamic template layouts optimized for modern feed interactions.' },
-  { name: 'Poster & Banner Design', category: 'automation', icon: 'image', desc: 'Large advertising banners balancing typographic hierarchy and image weight.' },
-  { name: 'Packaging Design', category: 'automation', icon: 'box', desc: 'Sensory product packaging specifications and folding templates.' },
-  { name: 'Business Card Design', category: 'automation', icon: 'credit-card', desc: 'Tactile print cards integrating modern layouts and luxury finishes.' },
-  { name: 'UI/UX Design', category: 'uiux', icon: 'layout', desc: 'Designing seamless wireframes and interactive screens focusing on user flow.' },
-  { name: 'Website Design', category: 'uiux', icon: 'monitor', desc: 'Stunning interactive responsive websites with premium glassmorphism.' },
-  { name: 'Mobile App Design', category: 'uiux', icon: 'smartphone', desc: 'Native app mockups and screens optimized for thumb reach and accessibility.' },
-  { name: 'SaaS Dashboard Design', category: 'uiux', icon: 'gauge', desc: 'Complex enterprise dashboard visualization and workflow interfaces.' },
-  { name: 'Pitch Deck Design', category: 'strategy', icon: 'rocket', desc: 'High-impact pitch presentations designed to win capital investments.' },
-  { name: 'Brand Strategy', category: 'branding', icon: 'compass', desc: 'Competitive mapping, positioning workshops, and tone design.' },
-  { name: 'Digital Marketing Creatives', category: 'strategy', icon: 'megaphone', desc: 'Performance marketing templates and dynamic layouts.' },
-  { name: 'Product Mockups', category: 'uiux', icon: 'package', desc: 'High-fidelity 3D device visuals and package wrapping mockups.' },
-  { name: 'AI-Assisted Creative Services', category: 'branding', icon: 'cpu', desc: 'Utilizing custom diffusion and neural networks for creative brainstorming.' },
-  { name: 'Digital Identity Development', category: 'branding', icon: 'globe', desc: 'Unifying your complete brand presence and IP across web channels.' },
-  { name: 'Creative Consulting', category: 'branding', icon: 'help-circle', desc: 'Expert consultation sessions to align design sprints and brand architecture.' }
-];
-
-function initializeServicesDeck() {
-  const grid = document.getElementById('services-grid');
-  if (!grid) return;
   
-  servicesData.forEach((s, idx) => {
-    const card = document.createElement('div');
-    card.className = `service-card glass-panel`;
-    card.setAttribute('data-cat', s.category);
-    
-    card.innerHTML = `
-      <div class="service-card-glow"></div>
-      <div class="service-card-icon">
-        <i data-lucide="${s.icon}"></i>
-      </div>
-      <div class="service-card-content">
-        <h3 class="service-card-title">${s.name}</h3>
-        <p class="service-card-desc">${s.desc}</p>
-      </div>
-      <div class="service-card-graphic">
-        <i data-lucide="${s.icon}" style="width: 60px; height: 60px;"></i>
-      </div>
-    `;
-    
-    // Flat sheen hover mouse tracking (no 3D tilt)
-    card.addEventListener('mousemove', (e) => {
-      const rect = card.getBoundingClientRect();
-      const x = e.clientX - rect.left;
-      const y = e.clientY - rect.top;
-      card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
-      card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-    });
-    
-    grid.appendChild(card);
-  });
-  
-  if (window.lucide) {
-    window.lucide.createIcons();
+  // Initialize specific tab logic on load
+  if (tabId === 'globe') {
+    setTimeout(initializeMapGlobe, 100);
   }
   
-  // Filter Tabs Event Listeners
-  const filterBtns = document.querySelectorAll('.services-filter-btn');
-  filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      // Toggle active
-      filterBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      
-      const cat = btn.getAttribute('data-category');
-      const cards = document.querySelectorAll('.service-card');
-      
-      cards.forEach(c => {
-        const itemCat = c.getAttribute('data-cat');
-        if (cat === 'all' || itemCat === cat) {
-          c.classList.remove('hidden');
-          gsap.fromTo(c, { scale: 0.9, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.4 });
-        } else {
-          c.classList.add('hidden');
-        }
-      });
-    });
-  });
-}
+  appendTerminalLog(`Workspace viewport loaded: ${tabLabels[tabId]}`, 'info');
+};
 
-// ----------------------------------------------------
-// 7. SCENE 6: PHILOSOPHY PIPELINE TIMELINE
-// ----------------------------------------------------
-function animatePhilosophyPipeline() {
-  const steps = document.querySelectorAll('.pipeline-step');
-  const progressLine = document.getElementById('pipeline-progress');
+window.closeTab = function(tabId, event) {
+  if (event) event.stopPropagation();
   
-  let currentStep = 0;
+  const tabTag = tabsBar.querySelector(`[data-pane="${tabId}"]`);
+  if (!tabTag) return;
   
-  const interval = setInterval(() => {
-    if (currentSceneId !== 'why') {
-      clearInterval(interval);
-      return;
+  const wasActive = tabTag.classList.contains('active');
+  tabTag.remove();
+  
+  // If we closed the active tab, fall back to welcome or another open tab
+  if (wasActive) {
+    const remainingTabs = tabsBar.querySelectorAll('.viewport-tab');
+    if (remainingTabs.length > 0) {
+      const targetId = remainingTabs[remainingTabs.length - 1].getAttribute('data-pane');
+      loadTab(targetId);
+    } else {
+      loadTab('welcome');
     }
+  }
+};
+
+// Wire file tree items
+treeFiles.forEach(file => {
+  file.addEventListener('click', () => {
+    const target = file.getAttribute('data-target');
+    loadTab(target);
+  });
+});
+
+// Wire tab clicks in navbar tabs
+tabsBar.addEventListener('click', (e) => {
+  const tab = e.target.closest('.viewport-tab');
+  if (tab) {
+    const target = tab.getAttribute('data-pane');
+    loadTab(target);
+  }
+});
+
+// Brand Vault tabs selection inside pane
+const vaultTabs = document.querySelectorAll('.vault-tab');
+const vaultPanes = document.querySelectorAll('.vault-content-pane');
+
+vaultTabs.forEach(tab => {
+  tab.addEventListener('click', () => {
+    vaultTabs.forEach(vt => vt.classList.remove('active'));
+    tab.classList.add('active');
     
-    steps.forEach((s, idx) => {
-      if (idx <= currentStep) {
-        s.classList.add('active');
+    const target = tab.getAttribute('data-vault');
+    vaultPanes.forEach(pane => {
+      if (pane.getAttribute('id') === `vault-${target}`) {
+        pane.classList.add('active');
       } else {
-        s.classList.remove('active');
+        pane.classList.remove('active');
       }
     });
     
-    const percentage = (currentStep / (steps.length - 1)) * 90;
-    if (progressLine) progressLine.style.width = `${percentage}%`;
+    appendTerminalLog(`JSON vault directory filtered: ${target}`, 'info');
+  });
+});
+
+// AI Studio Prompt compiler simulator
+const studioRunBtn = document.getElementById('btn-studio-run');
+const studioPlaceholder = document.getElementById('studio-placeholder');
+const studioOutput = document.getElementById('studio-output');
+
+if (studioRunBtn) {
+  studioRunBtn.addEventListener('click', () => {
+    const prompt = document.getElementById('studio-prompt').value.trim();
+    if (!prompt) {
+      appendTerminalLog('Studio compiler error: please write a prompt description first.', 'err');
+      return;
+    }
     
-    currentStep = (currentStep + 1) % steps.length;
-  }, 2200);
+    appendTerminalLog(`[AI ENGINE] Compiling prompt vector mapping...`, 'info');
+    studioPlaceholder.innerHTML = `
+      <i data-lucide="loader" class="tree-icon spinner" style="width: 32px; height: 32px; color: var(--border-active); animation: rotateClockwise 1.5s linear infinite;"></i>
+      <span>Neural Diffusion processing...</span>
+    `;
+    if (window.lucide) window.lucide.createIcons();
+    
+    studioOutput.classList.remove('active');
+    studioPlaceholder.style.display = 'flex';
+    
+    setTimeout(() => {
+      studioPlaceholder.style.display = 'none';
+      studioOutput.classList.add('active');
+      appendTerminalLog('[AI ENGINE] Prompt compiled successfully. Generated 1:1 Vector SVG shape.', 'info');
+    }, 2000);
+  });
 }
 
 // ----------------------------------------------------
-// 8. SCENE 7: WORLD MAP GLOBE
+// 5. TRANSPARENT LOGO PROCESSOR (CANVAS CLEANER)
+// ----------------------------------------------------
+async function processLogoToTransparent() {
+  const images = ['loading-logo-img', 'nav-logo-img', 'vault-primary-logo', 'vault-inverse-logo'];
+  
+  images.forEach(imgId => {
+    const imgEl = document.getElementById(imgId);
+    if (!imgEl) return;
+    
+    // Process once image loads
+    const process = () => {
+      try {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = imgEl.naturalWidth || imgEl.width;
+        canvas.height = imgEl.naturalHeight || imgEl.height;
+        
+        if (canvas.width === 0 || canvas.height === 0) return;
+        
+        ctx.drawImage(imgEl, 0, 0);
+        const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imgData.data;
+        
+        // Loop pixels: find cream off-white background and set alpha to 0
+        for (let i = 0; i < data.length; i += 4) {
+          const r = data[i];
+          const g = data[i+1];
+          const b = data[i+2];
+          
+          // Cream off-white matches r > 240, g > 240, b > 230
+          if (r > 235 && g > 235 && b > 225) {
+            data[i+3] = 0; // Transparent
+          }
+        }
+        
+        ctx.putImageData(imgData, 0, 0);
+        imgEl.src = canvas.toDataURL();
+      } catch (err) {
+        console.warn('Logo transparent processing skipped (cross-origin or load timing)', err);
+      }
+    };
+    
+    if (imgEl.complete) {
+      process();
+    } else {
+      imgEl.addEventListener('load', process);
+    }
+  });
+}
+
+// ----------------------------------------------------
+// 6. QUANTUM CORE LOADING OVERLAY TIMER
+// ----------------------------------------------------
+function runLoadingTimeline() {
+  const timeline = gsap.timeline();
+  
+  const loadingStatusTexts = [
+    'Booting Virtual OS Kernel...',
+    'Loading starfield space warp mechanics...',
+    'Spawning autonomous subagents...',
+    'Stabilizing quantum memory matrix...',
+    'Cockpit online. Decoupling G-forces...'
+  ];
+  
+  let percentageObj = { value: 0 };
+  
+  timeline.to(percentageObj, {
+    value: 100,
+    duration: 3.5,
+    ease: 'power1.inOut',
+    onUpdate: () => {
+      const pct = Math.floor(percentageObj.value);
+      const label = document.getElementById('loader-percentage');
+      if (label) label.textContent = `${pct}%`;
+      
+      // Update text index based on progress
+      const textIndex = Math.floor((pct / 100) * (loadingStatusTexts.length - 1));
+      const statusText = document.getElementById('loading-status-text');
+      if (statusText) {
+        // Append unique logs representing loading milestones
+        const currentMilestone = loadingStatusTexts[textIndex];
+        const lastEntry = statusText.lastElementChild;
+        if (!lastEntry || lastEntry.textContent.indexOf(currentMilestone) === -1) {
+          const entry = document.createElement('div');
+          entry.className = 'log-entry info';
+          entry.textContent = `[SYS] ${currentMilestone}`;
+          statusText.appendChild(entry);
+          statusText.scrollTop = statusText.scrollHeight;
+        }
+      }
+    }
+  });
+  
+  // Hide loading screen and reveal cockpit
+  timeline.to('#scene-loading', {
+    opacity: 0,
+    duration: 0.8,
+    ease: 'power2.out',
+    onComplete: () => {
+      const loadingScreen = document.getElementById('scene-loading');
+      if (loadingScreen) loadingScreen.classList.add('hidden');
+      document.body.classList.add('loaded');
+      
+      appendTerminalLog('Zero-G Command Deck fully initialized. Welcome back, Pilot.', 'system');
+    }
+  });
+}
+
+// Start Loading and processing immediately on DOM load
+window.addEventListener('DOMContentLoaded', async () => {
+  await processLogoToTransparent();
+  runLoadingTimeline();
+});
+
+// ----------------------------------------------------
+// 7. HOLOGRAPHIC MAP GLOBE RENDERER
 // ----------------------------------------------------
 function initializeMapGlobe() {
   const mapCanvas = document.getElementById('map-canvas');
   if (!mapCanvas) return;
   
   const mctx = mapCanvas.getContext('2d');
-  let mapParticles = [];
   
   function resizeMapCanvas() {
     mapCanvas.width = mapCanvas.parentElement.clientWidth;
     mapCanvas.height = mapCanvas.parentElement.clientHeight;
   }
   resizeMapCanvas();
-  window.addEventListener('resize', resizeMapCanvas);
   
   // Generate stylized coordinate dots representing a global map
-  const columns = 24;
-  const rows = 14;
+  const columns = 20;
+  const rows = 10;
   
   // Focal hubs to pulse
   const hubs = [
-    { x: 0.2, y: 0.35, size: 4, pulseRadius: 0 }, // SF
-    { x: 0.5, y: 0.3, size: 4, pulseRadius: 0 },  // London
-    { x: 0.7, y: 0.45, size: 4, pulseRadius: 0 }, // India
-    { x: 0.82, y: 0.35, size: 4, pulseRadius: 0 } // Tokyo
+    { x: 0.2, y: 0.35, size: 3, pulseRadius: 0 }, // SF
+    { x: 0.5, y: 0.3, size: 3, pulseRadius: 0 },  // London
+    { x: 0.7, y: 0.45, size: 3, pulseRadius: 0 }, // India
+    { x: 0.82, y: 0.35, size: 3, pulseRadius: 0 } // Tokyo
   ];
+  
+  let animationFrameId;
   
   function drawMap() {
     mctx.clearRect(0, 0, mapCanvas.width, mapCanvas.height);
@@ -637,17 +574,12 @@ function initializeMapGlobe() {
     const colWidth = mapCanvas.width / columns;
     const rowHeight = mapCanvas.height / rows;
     
-    const theme = document.documentElement.getAttribute('data-theme') || 'dark';
-    const dotColor = theme === 'dark' ? 'rgba(192, 132, 252, 0.15)' : 'rgba(109, 74, 255, 0.08)';
-    const hubColor = theme === 'dark' ? 'rgb(192, 132, 252)' : 'rgb(109, 74, 255)';
-    const pulseColor = theme === 'dark' ? '192, 132, 252' : '109, 74, 255';
-    
     // Draw grid of dots
     for (let c = 0; c < columns; c++) {
       for (let r = 0; r < rows; r++) {
         // Skip dots to shape it roughly like a world map outline
-        if ((r === 0 && (c < 4 || c > 20)) ||
-            (r === rows - 1 && (c < 10 || c > 14)) ||
+        if ((r === 0 && (c < 3 || c > 17)) ||
+            (r === rows - 1 && (c < 8 || c > 12)) ||
             (c === 0 || c === columns - 1)) {
           continue;
         }
@@ -656,8 +588,8 @@ function initializeMapGlobe() {
         const y = r * rowHeight + rowHeight / 2;
         
         mctx.beginPath();
-        mctx.arc(x, y, 1.5, 0, Math.PI * 2);
-        mctx.fillStyle = dotColor;
+        mctx.arc(x, y, 1.2, 0, Math.PI * 2);
+        mctx.fillStyle = 'rgba(124, 93, 255, 0.12)';
         mctx.fill();
       }
     }
@@ -670,24 +602,36 @@ function initializeMapGlobe() {
       // Draw hub center node
       mctx.beginPath();
       mctx.arc(hx, hy, h.size, 0, Math.PI * 2);
-      mctx.fillStyle = hubColor;
+      mctx.fillStyle = 'rgb(124, 93, 255)';
       mctx.fill();
       
       // Draw pulse ripple ring
       h.pulseRadius += 0.5;
-      if (h.pulseRadius > 35) h.pulseRadius = 0;
+      if (h.pulseRadius > 25) h.pulseRadius = 0;
       
       mctx.beginPath();
       mctx.arc(hx, hy, h.pulseRadius, 0, Math.PI * 2);
-      mctx.strokeStyle = `rgba(${pulseColor}, ${(1 - h.pulseRadius / 35) * (theme === 'dark' ? 0.6 : 0.3)})`;
+      mctx.strokeStyle = `rgba(124, 93, 255, ${1 - h.pulseRadius / 25})`;
       mctx.lineWidth = 1;
       mctx.stroke();
     });
     
-    requestAnimationFrame(drawMap);
+    animationFrameId = requestAnimationFrame(drawMap);
   }
   
   drawMap();
+  
+  // Clean up animation frame upon tab changes
+  window.addEventListener('blur', () => cancelAnimationFrame(animationFrameId));
 }
 
-// Native scrolling enabled. Scrolling navigation handled via CSS smooth scrolling.
+// ----------------------------------------------------
+// 8. CLOCK CLOCK UPDATE TIME
+// ----------------------------------------------------
+setInterval(() => {
+  const clock = document.getElementById('os-clock');
+  if (clock) {
+    const now = new Date();
+    clock.textContent = now.toTimeString().split(' ')[0];
+  }
+}, 1000);
