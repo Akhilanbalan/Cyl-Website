@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CYL OS — The Quantum Creative Operating System</title>
+  <title>CYL OS — The Intelligent Creative Operating System</title>
   <meta name="description" content="Build, manage, and scale your brand identity through an interactive AI-first developer workspace.">
   
   <!-- CSS Files -->
@@ -35,404 +35,313 @@
     <div class="loader-percentage" id="loader-percentage">0%</div>
   </section>
 
-  <!-- ================= HEADER NAVBAR (IDE STATUS BAR) ================= -->
-  <header class="ide-navbar">
-    <div class="ide-logo-group">
-      <img src="/assets/logo.png" alt="CYL Logo" class="ide-logo" id="nav-logo-img">
-      <span class="ide-brand">CYL_OS // CONTROL_PANEL</span>
-    </div>
-    <div class="ide-status">
-      <div class="ide-status-item">
-        <span class="status-indicator compiling" id="compiling-indicator"></span>
-        <span id="compiler-status">KERNEL: ACTIVE</span>
-      </div>
-      <div class="ide-status-item">
-        <i data-lucide="shield" class="tree-icon" style="color: var(--neon-purple);"></i>
-        <span>SECURE_SHELL</span>
-      </div>
-      <div class="ide-status-item">
-        <i data-lucide="clock" class="tree-icon"></i>
-        <span id="os-clock">00:00:00</span>
-      </div>
-    </div>
+  <!-- ================= HEADER NAVBAR ================= -->
+  <header class="os-navbar" id="os-header">
+    <a href="#scene-welcome" class="nav-logo-group">
+      <img src="/assets/logo.png" alt="CYL Logo" class="nav-logo" id="nav-logo-img">
+      <span class="nav-brand-name">CYL OS</span>
+    </a>
+    <ul class="nav-links">
+      <li class="nav-link active" data-scene="welcome"><a href="#scene-welcome">Home</a></li>
+      <li class="nav-link" data-scene="problem-solution"><a href="#scene-problem-solution">Contrast</a></li>
+      <li class="nav-link" data-scene="bento"><a href="#scene-bento">Ecosystem</a></li>
+      <li class="nav-link" data-scene="services"><a href="#scene-services">Services</a></li>
+      <li class="nav-link" data-scene="metrics"><a href="#scene-metrics">Impact</a></li>
+    </ul>
+    <a href="#scene-metrics" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
+      Launch Console
+      <i data-lucide="terminal"></i>
+    </a>
   </header>
 
-  <!-- ================= OS DECK VIEWPORT HERO ================= -->
-  <section class="os-deck-hero">
-    <div class="command-deck" id="command-deck-container">
+  <!-- ================= SCENE 2 — {WELCOME HERO} ================= -->
+  <section class="scene" id="scene-welcome">
+    <div class="hero-content">
+      <div class="welcome-logo-container">
+        <img src="/assets/logo.png" alt="CYL Logo" class="welcome-logo-img" id="hero-logo-img">
+      </div>
+      <span class="section-label">// Orchestrating Brand Identity</span>
+      <h1 class="welcome-headline">
+        The Intelligent <span class="text-gradient">Creative Operating System</span>
+      </h1>
+      <p class="welcome-sub-headline">
+        Helping startups and enterprises build, govern, and scale their digital identity through one unified virtual command workspace.
+      </p>
+      <div class="cta-group">
+        <a href="#scene-problem-solution" class="btn-minimal-primary" style="text-decoration: none;">
+          Explore Ecosystem
+          <i data-lucide="arrow-right"></i>
+        </a>
+        <a href="#scene-bento" class="btn-minimal-secondary" style="text-decoration: none;">
+          View Live Demo
+          <i data-lucide="monitor"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 3 — {PROBLEM vs SOLUTION} ================= -->
+  <section class="scene" id="scene-problem-solution">
+    <span class="section-label">// Operational Contrast</span>
+    <h2>Fragmented Legacy vs. CYL OS</h2>
+    <p class="section-desc">
+      Modern brands currently rely on multiple disconnected platforms for design, assets, and specs. We bring these scopes together.
+    </p>
+    
+    <div class="comparison-container">
       
-      <!-- LEFT EXP-PANEL: FILE EXPLORER TREE -->
-      <aside class="explorer-panel glass-ide-panel float-panel-slow" id="panel-explorer">
-        <div class="panel-title-mono">
-          <span>Workspace Explorer</span>
-          <i data-lucide="folder-tree" class="tree-icon"></i>
+      <!-- Challenge Card -->
+      <div class="comparison-card glass-panel challenge-card">
+        <div class="card-sheen"></div>
+        <div class="comp-header">
+          <div class="comp-icon">
+            <i data-lucide="alert-triangle"></i>
+          </div>
+          <h3>Fragmented Brand Pipelines</h3>
         </div>
-        <ul class="explorer-tree">
-          <li class="tree-folder">
-            <div class="folder-header">
-              <i data-lucide="chevron-down" class="tree-icon"></i>
-              <i data-lucide="folder" class="tree-icon" style="color: var(--neon-purple);"></i>
-              <span>cyl_core</span>
+        <ul class="comp-list">
+          <li>
+            <span class="comp-bullet">1</span>
+            <div class="comp-text">
+              <strong>Disconnected Tools</strong>
+              <span>Siloed assets scattered across Google Drive, Figma, Slack, and local directories.</span>
             </div>
-            <ul class="folder-items">
-              <li class="tree-file active" data-target="welcome">
-                <i data-lucide="file-text" class="tree-icon"></i>
-                <span>WELCOME.md</span>
-              </li>
-              <li class="tree-file" data-target="ai-studio">
-                <i data-lucide="cpu" class="tree-icon"></i>
-                <span>ai_studio.py</span>
-              </li>
-              <li class="tree-file" data-target="globe">
-                <i data-lucide="globe" class="tree-icon"></i>
-                <span>map_globe.canvas</span>
-              </li>
-              <li class="tree-file" data-target="vault">
-                <i data-lucide="archive" class="tree-icon"></i>
-                <span>brand_vault.json</span>
-              </li>
-              <li class="tree-file" data-target="metrics">
-                <i data-lucide="activity" class="tree-icon"></i>
-                <span>metrics_log.sh</span>
-              </li>
-            </ul>
           </li>
-          <li class="tree-folder" style="opacity: 0.5;">
-            <div class="folder-header">
-              <i data-lucide="chevron-right" class="tree-icon"></i>
-              <i data-lucide="folder" class="tree-icon"></i>
-              <span>modules_dep</span>
+          <li>
+            <span class="comp-bullet">2</span>
+            <div class="comp-text">
+              <strong>Consistency Drift</strong>
+              <span>Outdated typography styles and invalid palette colors applied across new pipelines.</span>
+            </div>
+          </li>
+          <li>
+            <span class="comp-bullet">3</span>
+            <div class="comp-text">
+              <strong>Refactor Risk</strong>
+              <span>Modifying one design asset breaks downstream marketing deliverables with zero safety tests.</span>
             </div>
           </li>
         </ul>
-      </aside>
+      </div>
 
-      <!-- CENTER PANEL: ACTIVE VIEWPORT -->
-      <main class="viewport-panel glass-ide-panel float-panel-medium" id="panel-viewport">
-        <div class="viewport-header-tabs" id="tabs-bar">
-          <div class="viewport-tab active" data-pane="welcome">
-            <i data-lucide="file-text" class="tree-icon"></i>
-            <span>WELCOME.md</span>
+      <!-- Solution Card -->
+      <div class="comparison-card glass-panel solution-card">
+        <div class="card-sheen"></div>
+        <div class="comp-header">
+          <div class="comp-icon">
+            <i data-lucide="shield-check"></i>
           </div>
+          <h3>Deterministic Control</h3>
         </div>
-        
-        <div class="viewport-body">
-          
-          <!-- Tab 1: WELCOME.MD -->
-          <div class="viewport-pane active" id="pane-welcome">
-            <h1 style="font-size: 2.2rem; font-weight: 800; line-height: 1.1; margin-bottom: 8px;">
-              CYL OS <span class="text-gradient">v4.0.0</span>
-            </h1>
-            <p style="font-size: 0.85rem; font-family: var(--font-mono); color: var(--neon-purple); margin-bottom: 16px;">
-              // THE INTELLIGENT BRAND ENGINE
-            </p>
-            <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.6; margin-bottom: 24px;">
-              Welcome to the Zero-G Control Cockpit. This dashboard is built on Google Antigravity's lightweight virtual kernel, allowing you to orchestrate design pipelines, diff codebases, model vector assets, and monitor active subagent worker threads in a high-fidelity workspace.
-            </p>
-            
-            <h2 style="font-size: 1.2rem; margin-bottom: 12px; border-bottom: 1px solid var(--border-color); padding-bottom: 6px;">
-              OS Core Submodules
-            </h2>
-            <div class="hologram-grid">
-              <div class="hologram-card">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px;">AI Diffusion Engine</h3>
-                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">Generate vector art systems, typography mappings, and layout coordinates instantly.</p>
-              </div>
-              <div class="hologram-card">
-                <h3 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 4px;">Unified Asset Vault</h3>
-                <p style="font-size: 0.75rem; color: var(--text-muted); line-height: 1.4;">Air-gap secure directory containing brand structures, configurations, and specs.</p>
-              </div>
+        <ul class="comp-list">
+          <li>
+            <span class="comp-bullet">✓</span>
+            <div class="comp-text">
+              <strong>Single Source of Truth</strong>
+              <span>A unified directory managing brand structures, configurations, and core designs.</span>
             </div>
-            
-            <div style="margin-top: 32px; display: flex; gap: 12px;">
-              <button class="btn-minimal-primary" onclick="loadTab('ai-studio')" style="cursor: pointer;">
-                Open AI Studio
-                <i data-lucide="cpu"></i>
-              </button>
-              <a href="#spec-details" class="btn-minimal-secondary" style="text-decoration: none;">
-                Inspect KERNEL Specs
-                <i data-lucide="arrow-down"></i>
-              </a>
+          </li>
+          <li>
+            <span class="comp-bullet">✓</span>
+            <div class="comp-text">
+              <strong>Governance Checking</strong>
+              <span>Verify layouts automatically, failing deployment scripts if layout guidelines are violated.</span>
             </div>
-          </div>
-
-          <!-- Tab 2: AI_STUDIO.PY -->
-          <div class="viewport-pane" id="pane-ai-studio">
-            <h2 style="font-size: 1.4rem; margin-bottom: 4px;">ai_studio.py</h2>
-            <p style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--neon-purple); margin-bottom: 16px;">
-              // VECTOR ASSET GENERATOR MODULE
-            </p>
-            <div class="spec-split">
-              <div class="spec-left">
-                <div class="studio-input-group" style="margin-bottom: 12px;">
-                  <span class="studio-label">Asset Target</span>
-                  <select class="studio-select" id="asset-type-select">
-                    <option value="logo">Futuristic Logo System</option>
-                    <option value="ui">Glassmorphic UI Mockup</option>
-                    <option value="palette">Harmonized HSL Palette</option>
-                  </select>
-                </div>
-                <div class="studio-input-group" style="margin-bottom: 16px;">
-                  <span class="studio-label">System Prompt</span>
-                  <textarea class="studio-prompt-input" id="studio-prompt" placeholder="Describe the vector system components..."></textarea>
-                </div>
-                <button class="btn-generate" id="btn-studio-run" style="width: 100%;">
-                  COMPILE ASSETS
-                  <i data-lucide="terminal"></i>
-                </button>
-              </div>
-              <div class="spec-right">
-                <div class="workspace-preview" style="width: 100%; height: 180px;">
-                  <div class="preview-placeholder" id="studio-placeholder">
-                    <i data-lucide="cpu" style="width: 32px; height: 32px; color: var(--border-active);"></i>
-                    <span>Awaiting Prompt Execution...</span>
-                  </div>
-                  <div class="preview-output" id="studio-output">
-                    <div class="generated-logo-display">
-                      <div class="generated-shape"></div>
-                    </div>
-                    <div class="generated-meta">
-                      <div class="meta-row">
-                        <span>EST. RATIO</span>
-                        <strong>1:1 Vector SVG</strong>
-                      </div>
-                      <div class="meta-row">
-                        <span>SWATCHES</span>
-                        <div class="color-swatches">
-                          <div class="swatch" style="background: #7C5DFF;"></div>
-                          <div class="swatch" style="background: #C084FC;"></div>
-                          <div class="swatch" style="background: #0F172A;"></div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              </div>
+          </li>
+          <li>
+            <span class="comp-bullet">✓</span>
+            <div class="comp-text">
+              <strong>Clean Asset Propagation</strong>
+              <span>Modifying coordinates automatically rebuilds all corresponding vector visuals.</span>
             </div>
-          </div>
+          </li>
+        </ul>
+      </div>
 
-          <!-- Tab 3: MAP_GLOBE.CANVAS -->
-          <div class="viewport-pane" id="pane-globe">
-            <h2 style="font-size: 1.4rem; margin-bottom: 4px;">map_globe.canvas</h2>
-            <p style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--neon-purple); margin-bottom: 16px;">
-              // NETWORK COORD MAP OVERLAY
-            </p>
-            <div class="world-map-wrapper" style="width: 100%; height: 260px;">
-              <canvas id="map-canvas"></canvas>
-              <div class="map-stats">
-                <div class="map-stat-row">
-                  <span>ACTIVE NODES:</span>
-                  <span class="map-stat-value">SF, LDN, BLR, TYO</span>
-                </div>
-                <div class="map-stat-row">
-                  <span>LATENCY:</span>
-                  <span class="map-stat-value">12ms (FAST)</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Tab 4: BRAND_VAULT.JSON -->
-          <div class="viewport-pane" id="pane-vault">
-            <h2 style="font-size: 1.4rem; margin-bottom: 4px;">brand_vault.json</h2>
-            <p style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--neon-purple); margin-bottom: 16px;">
-              // ENCRYPTED DIRECTORY METADATA
-            </p>
-            <div class="vault-navigation">
-              <span class="vault-tab active" data-vault="logos">Logos</span>
-              <span class="vault-tab" data-vault="fonts">Fonts</span>
-              <span class="vault-tab" data-vault="palettes">Palettes</span>
-            </div>
-            <div class="vault-viewer" style="margin-top: 16px; border: 1px solid var(--border-color); border-radius: 6px; padding: 12px; background: rgba(0,0,0,0.3);">
-              
-              <div class="vault-content-pane active" id="vault-logos">
-                <div class="vault-grid">
-                  <div class="vault-item">
-                    <div class="vault-item-preview">
-                      <img src="/assets/logo.png" alt="Primary Logo" id="vault-primary-logo">
-                    </div>
-                    <span class="vault-item-name">Primary.png</span>
-                  </div>
-                  <div class="vault-item">
-                    <div class="vault-item-preview">
-                      <img src="/assets/logo.png" alt="Inverse Logo" id="vault-inverse-logo" style="filter: invert(1);">
-                    </div>
-                    <span class="vault-item-name">Inverse.png</span>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="vault-content-pane" id="vault-fonts">
-                <div style="display: flex; flex-direction: column; gap: 16px; width: 100%;">
-                  <div>
-                    <span class="vault-font-details">DISPLAY FONTS</span>
-                    <div class="vault-font-preview" style="font-family: var(--font-sans);">Inter Bold</div>
-                  </div>
-                  <div>
-                    <span class="vault-font-details">CODE MONO FONTS</span>
-                    <div class="vault-font-preview" style="font-family: var(--font-mono); font-size: 1.3rem;">Fira Code</div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="vault-content-pane" id="vault-palettes">
-                <div style="display: flex; flex-direction: column; gap: 10px; width: 100%;">
-                  <div class="vault-palette-swatch" style="background: linear-gradient(90deg, #030305, #7C5DFF, #C084FC); display: flex; align-items: center; padding: 0 12px; justify-content: space-between; font-size: 0.65rem;">
-                    <span>Neon Dark Theme</span>
-                    <span>#030305 // #7C5DFF</span>
-                  </div>
-                  <div class="vault-palette-swatch" style="background: linear-gradient(90deg, #F8F9FA, #6D4AFF, #A78BFA); display: flex; align-items: center; padding: 0 12px; justify-content: space-between; font-size: 0.65rem; color: #12141C;">
-                    <span>Sleek Light Theme</span>
-                    <span>#F8F9FA // #6D4AFF</span>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-          <!-- Tab 5: METRICS_LOG.SH -->
-          <div class="viewport-pane" id="pane-metrics">
-            <h2 style="font-size: 1.4rem; margin-bottom: 4px;">metrics_log.sh</h2>
-            <p style="font-size: 0.75rem; font-family: var(--font-mono); color: var(--neon-purple); margin-bottom: 16px;">
-              // SHELL REAL-TIME RESOURCE UTILIZATION
-            </p>
-            <div class="impact-grid" style="grid-template-columns: repeat(3, 1fr); margin-top: 10px;">
-              
-              <div class="impact-card">
-                <div class="impact-header">
-                  <div class="impact-icon">
-                    <i data-lucide="zap"></i>
-                  </div>
-                  <span class="impact-metric" style="font-size: 1.3rem;">99.9%</span>
-                </div>
-                <div class="impact-details">
-                  <h3>Build Uptime</h3>
-                  <div class="impact-bar-wrapper">
-                    <div class="impact-bar-fill" style="width: 99.9%; background: var(--neon-green);"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="impact-card">
-                <div class="impact-header">
-                  <div class="impact-icon">
-                    <i data-lucide="activity"></i>
-                  </div>
-                  <span class="impact-metric" style="font-size: 1.3rem;">12.4M</span>
-                </div>
-                <div class="impact-details">
-                  <h3>Node Queries</h3>
-                  <div class="impact-bar-wrapper">
-                    <div class="impact-bar-fill" style="width: 85%; background: var(--neon-purple);"></div>
-                  </div>
-                </div>
-              </div>
-              
-              <div class="impact-card">
-                <div class="impact-header">
-                  <div class="impact-icon">
-                    <i data-lucide="database"></i>
-                  </div>
-                  <span class="impact-metric" style="font-size: 1.3rem;">380ms</span>
-                </div>
-                <div class="impact-details">
-                  <h3>Sync Speed</h3>
-                  <div class="impact-bar-wrapper">
-                    <div class="impact-bar-fill" style="width: 92%; background: var(--neon-blue);"></div>
-                  </div>
-                </div>
-              </div>
-
-            </div>
-          </div>
-
-        </div>
-      </main>
-
-      <!-- RIGHT PANEL: SUBAGENT STATUS MONITOR & TERMINAL -->
-      <aside class="terminal-panel glass-ide-panel float-panel-fast" id="panel-terminal">
-        <div class="panel-title-mono">
-          <span>Subagents Online</span>
-          <i data-lucide="users" class="tree-icon"></i>
-        </div>
-        <div class="subagent-list">
-          <div class="subagent-item">
-            <div class="subagent-info">
-              <i data-lucide="terminal" class="tree-icon" style="color: var(--neon-purple);"></i>
-              <span>copilot.sh</span>
-            </div>
-            <span class="subagent-status running">RUNNING</span>
-          </div>
-          <div class="subagent-item">
-            <div class="subagent-info">
-              <i data-lucide="shield-check" class="tree-icon" style="color: var(--neon-green);"></i>
-              <span>security.sh</span>
-            </div>
-            <span class="subagent-status idle">IDLE</span>
-          </div>
-        </div>
-
-        <div class="panel-title-mono" style="margin-top: 8px;">
-          <span>Secure Console</span>
-          <i data-lucide="terminal" class="tree-icon"></i>
-        </div>
-        <div class="terminal-logs" id="terminal-log-box">
-          <div class="log-entry system">[KERNEL] Virtual Shell Active</div>
-          <div class="log-entry info">[SYS] Loading starfield physics engine...</div>
-          <div class="log-entry warn">[WARN] Gravity damping level: 100% (locked)</div>
-        </div>
-        <div class="terminal-input-group">
-          <span class="terminal-prompt">$</span>
-          <input type="text" class="terminal-input" id="terminal-shell-input" placeholder="Type SSH instruction..." autocomplete="off">
-        </div>
-      </aside>
-
-    </div>
-
-    <!-- ZERO-G DAMPING CONTROLLER SLIDER -->
-    <div class="gravity-deck-controller">
-      <span class="gravity-label">
-        <i data-lucide="activity" class="tree-icon"></i>
-        GRAVITY SHIELD LEVEL
-      </span>
-      <input type="range" class="gravity-slider" id="gravity-slider-input" min="0" max="100" value="100">
-      <span class="gravity-value" id="gravity-slider-val">100%</span>
     </div>
   </section>
 
-  <!-- ================= TECH SPEC DETAILS SECTION (LOWER FOLD) ================= -->
-  <section class="tech-spec-section" id="spec-details">
-    <div style="text-align: center; max-width: 600px; margin: 0 auto 50px auto;">
-      <span class="section-label" style="font-family: var(--font-mono); color: var(--neon-purple); font-size: 0.75rem; letter-spacing: 0.1em; text-transform: uppercase;">
-        // KERNEL METADATA ARCHITECTURE
-      </span>
-      <h2 style="font-size: 2.2rem; font-weight: 800; margin-top: 6px; letter-spacing: -0.02em;">
-        System Specifications
-      </h2>
-      <p style="font-size: 0.9rem; color: var(--text-muted); line-height: 1.5; margin-top: 12px;">
-        Explore the micro-services layout and deterministic structures driving the core performance of the CYL ecosystem.
-      </p>
-    </div>
+  <!-- ================= SCENE 4 — {THE BENTO WORKSPACE} ================= -->
+  <section class="scene" id="scene-bento">
+    <span class="section-label">// Holographic Ecosystem</span>
+    <h2>The Digital Identity Workspace</h2>
+    <p class="section-desc">
+      Orchestrate, code, and track branding tasks in a unified interface that floatingly adapts to your requirements.
+    </p>
     
-    <div class="spec-grid">
-      <div class="spec-card">
-        <div style="color: var(--neon-purple); margin-bottom: 16px;"><i data-lucide="cpu" style="width: 32px; height: 32px;"></i></div>
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;">Deterministic AST Analyser</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Parses code structures down to functional mapping scopes with attributed file:line provenance gates.</p>
+    <div class="bento-container">
+      
+      <!-- Card 1: AI Studio -->
+      <div class="bento-card glass-panel bento-ai-studio">
+        <div class="card-sheen"></div>
+        <div class="bento-header-pane">
+          <div class="bento-title-group">
+            <i data-lucide="cpu" style="color: var(--neon-purple);"></i>
+            <span>ai_studio.py</span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--neon-green);">AI_ENGINE: ACTIVE</span>
+        </div>
+        <div class="bento-workspace">
+          <div style="width: 40%; display: flex; flex-direction: column; gap: 10px;">
+            <div style="display: flex; flex-direction: column; gap: 4px;">
+              <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted);">ASSET</span>
+              <select style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: white; padding: 4px; border-radius: 4px; font-size: 0.7rem; outline: none;">
+                <option>Vector Logo</option>
+                <option>UI Mockup</option>
+              </select>
+            </div>
+            <button class="btn-minimal-primary" style="padding: 6px; font-size: 0.65rem; justify-content: center; box-shadow: none;">
+              COMPILE
+            </button>
+          </div>
+          <div class="studio-preview">
+            <div class="preview-shape"></div>
+          </div>
+        </div>
       </div>
-      <div class="spec-card">
-        <div style="color: var(--neon-green); margin-bottom: 16px;"><i data-lucide="shield" style="width: 32px; height: 32px;"></i></div>
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;">Layering Gate Gates</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Defines custom modular rules, blocking deployment pipelines whenever circular dependencies are introduced.</p>
+
+      <!-- Card 2: Brand Vault -->
+      <div class="bento-card glass-panel bento-brand-vault">
+        <div class="card-sheen"></div>
+        <div class="bento-header-pane">
+          <div class="bento-title-group">
+            <i data-lucide="archive" style="color: var(--neon-purple);"></i>
+            <span>brand_vault.json</span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted);">ENCRYPTED</span>
+        </div>
+        <div class="vault-grid">
+          <div class="vault-item">
+            <img src="/assets/logo.png" alt="Primary Logo" id="vault-primary-logo">
+            <div>Primary.png</div>
+          </div>
+          <div class="vault-item">
+            <img src="/assets/logo.png" alt="Inverse Logo" id="vault-inverse-logo" style="filter: invert(1);">
+            <div>Inverse.png</div>
+          </div>
+        </div>
       </div>
-      <div class="spec-card">
-        <div style="color: var(--neon-blue); margin-bottom: 16px;"><i data-lucide="globe" style="width: 32px; height: 32px;"></i></div>
-        <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 8px;">Air-Gap Safe Viewer</h3>
-        <p style="font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">Self-contained offline map outputs making zero external web network queries for secure auditing.</p>
+
+      <!-- Card 3: Project Workspace -->
+      <div class="bento-card glass-panel bento-project-workspace">
+        <div class="card-sheen"></div>
+        <div class="bento-header-pane">
+          <div class="bento-title-group">
+            <i data-lucide="activity" style="color: var(--neon-purple);"></i>
+            <span>workspace_kanban.sh</span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted);">Active Sprints</span>
+        </div>
+        <div class="project-kanban">
+          <div class="kanban-col">
+            <strong>TODO</strong>
+            <div class="kanban-card">Aethera Spec</div>
+          </div>
+          <div class="kanban-col">
+            <strong>ACTIVE</strong>
+            <div class="kanban-card" style="border-left: 2px solid var(--neon-purple);">Synthetix UI</div>
+          </div>
+          <div class="kanban-col">
+            <strong>COMPLETE</strong>
+            <div class="kanban-card" style="border-left: 2px solid var(--neon-green);">Veloce Pack</div>
+          </div>
+        </div>
       </div>
+
+      <!-- Card 4: Creative Automation -->
+      <div class="bento-card glass-panel bento-automation">
+        <div class="card-sheen"></div>
+        <div class="bento-header-pane">
+          <div class="bento-title-group">
+            <i data-lucide="refresh-cw" style="color: var(--neon-purple);"></i>
+            <span>creative_automation.py</span>
+          </div>
+          <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--neon-purple);">Active Flows</span>
+        </div>
+        <div class="automation-flow">
+          <div class="flow-node active"><i data-lucide="cpu" style="width: 16px; height: 16px;"></i></div>
+          <div class="flow-line"></div>
+          <div class="flow-node"><i data-lucide="monitor" style="width: 16px; height: 16px;"></i></div>
+          <div class="flow-line"></div>
+          <div class="flow-node"><i data-lucide="box" style="width: 16px; height: 16px;"></i></div>
+        </div>
+      </div>
+
     </div>
   </section>
+
+  <!-- ================= SCENE 5 — {SERVICES DECK} ================= -->
+  <section class="scene" id="scene-services">
+    <span class="section-label">// Capability Array</span>
+    <h2>Creative & Engineering Services</h2>
+    <p class="section-desc">
+      Explore the modular workflows our designers, developers, and AI agents deploy for client projects.
+    </p>
+    
+    <div class="services-grid" id="services-grid">
+      <!-- Injected Dynamically by JS -->
+    </div>
+  </section>
+
+  <!-- ================= SCENE 6 — {METRICS & GLOBE SHOWCASE} ================= -->
+  <section class="scene" id="scene-metrics">
+    <span class="section-label">// Scale & Performance</span>
+    <h2>Global Operations & Core Metrics</h2>
+    <p class="section-desc">
+      Monitoring node requests, sync speeds, and deployment uptimes across international agency systems.
+    </p>
+    
+    <div class="metrics-showcase">
+      
+      <!-- Coordinate Globe -->
+      <div class="world-map-wrapper glass-panel">
+        <canvas id="map-canvas"></canvas>
+        <div class="map-stats">
+          <div class="map-stat-row">
+            <span>NODES:</span>
+            <span class="map-stat-value">SF, LDN, BLR, TYO</span>
+          </div>
+          <div class="map-stat-row">
+            <span>LATENCY:</span>
+            <span class="map-stat-value">12ms (FAST)</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resources split -->
+      <div class="metrics-split">
+        <div class="metric-card glass-panel">
+          <div class="card-sheen"></div>
+          <div>
+            <span class="section-label" style="margin-bottom: 2px;">Deploy Uptime</span>
+            <h4 style="font-size: 1.1rem;">Secure Operations</h4>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 99.9%; background: var(--neon-green);"></div></div>
+          </div>
+          <div class="metric-num">99.9%</div>
+        </div>
+        <div class="metric-card glass-panel">
+          <div class="card-sheen"></div>
+          <div>
+            <span class="section-label" style="margin-bottom: 2px;">Sync Speed</span>
+            <h4 style="font-size: 1.1rem;">Zero-Damping Sync</h4>
+            <div class="metric-bar"><div class="metric-bar-fill" style="width: 92%; background: var(--neon-blue);"></div></div>
+          </div>
+          <div class="metric-num">380ms</div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ZERO-G DAMPING CONTROLLER SLIDER -->
+  <div class="gravity-deck-controller" id="gravity-controller">
+    <span class="gravity-label">
+      <i data-lucide="activity" class="tree-icon" style="width: 14px; height: 14px;"></i>
+      GRAVITY SHIELD LEVEL
+    </span>
+    <input type="range" class="gravity-slider" id="gravity-slider-input" min="0" max="100" value="100">
+    <span class="gravity-value" id="gravity-slider-val">100%</span>
+  </div>
 
   <!-- Include GSAP libraries via CDN -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
