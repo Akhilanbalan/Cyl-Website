@@ -155,7 +155,7 @@ if (gravitySlider) {
 // 3. TRANSPARENT LOGO PROCESSOR (CANVAS CLEANER)
 // ----------------------------------------------------
 async function processLogoToTransparent() {
-  const images = ['loading-logo-img', 'nav-logo-img', 'hero-logo-img', 'vault-primary-logo', 'vault-inverse-logo'];
+  const images = ['loading-logo-img', 'nav-logo-img', 'vault-primary-logo', 'vault-inverse-logo'];
   
   images.forEach(imgId => {
     const imgEl = document.getElementById(imgId);
