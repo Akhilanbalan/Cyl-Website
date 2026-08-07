@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
   <!-- Resolve the theme before first paint so the page never flashes the wrong palette -->
   <script>(function(){try{var t=localStorage.getItem('theme');if(!t){t=window.matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light';}document.documentElement.setAttribute('data-theme',t);}catch(e){}})();</script>
@@ -16,8 +16,16 @@
   <script src="https://unpkg.com/lucide@latest"></script>
 </head>
 <body>
+  <!-- Custom premium cursor dot and ring -->
+  <div class="custom-cursor-dot" id="cursor-dot"></div>
+  <div class="custom-cursor-ring" id="cursor-ring"></div>
+
   <!-- Futuristic Cybernetic & Starfield Backings -->
   <div class="cyber-bg"></div>
+  <div class="aurora-mesh">
+    <div class="aurora-blob one"></div>
+    <div class="aurora-blob two"></div>
+  </div>
   <canvas class="starfield" id="starfield-canvas"></canvas>
   
   <!-- ================= SCENE 1 — {QUANTUM CORE INITIALIZATION} ================= -->
@@ -31,10 +39,13 @@
       </div>
     </div>
     <div class="loader-terminal-output" id="loading-status-text">
-      <div class="log-entry system">[SYS] Quantum core initializing...</div>
+      <div class="log-entry system">[SYS] Booting Virtual OS Kernel...</div>
       <div class="log-entry info">[INFO] Mapping memory matrices...</div>
     </div>
     <div class="loader-percentage" id="loader-percentage">0%</div>
+    <button class="btn-minimal-primary" id="btn-enter-universe" style="display: none; margin-top: 24px; opacity: 0; transform: scale(0.9);">
+      ✨ Enter the Creative Universe
+    </button>
   </section>
 
   <!-- ================= HEADER NAVBAR ================= -->
@@ -48,14 +59,15 @@
       <li class="nav-link" data-scene="problem-solution"><a href="#scene-problem-solution">Contrast</a></li>
       <li class="nav-link" data-scene="bento"><a href="#scene-bento">Ecosystem</a></li>
       <li class="nav-link" data-scene="services"><a href="#scene-services">Services</a></li>
-      <li class="nav-link" data-scene="metrics"><a href="#scene-metrics">Impact</a></li>
+      <li class="nav-link" data-scene="portfolio"><a href="#scene-portfolio">Work</a></li>
+      <li class="nav-link" data-scene="contact"><a href="#scene-contact">Contact</a></li>
     </ul>
     <div class="nav-actions" style="display: flex; align-items: center; gap: 12px;">
       <button class="theme-toggle" id="theme-toggle-btn" aria-label="Toggle Theme" style="background: transparent; border: 1px solid var(--border-color); border-radius: 50%; width: 34px; height: 34px; display: flex; align-items: center; justify-content: center; color: var(--text-main); cursor: pointer; transition: all 0.2s ease;">
         <i class="sun-icon" data-lucide="sun" style="width: 15px; height: 15px; stroke-width: 2.2;"></i>
         <i class="moon-icon" data-lucide="moon" style="width: 15px; height: 15px; stroke-width: 2.2;"></i>
       </button>
-      <a href="#scene-metrics" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
+      <a href="#scene-contact" class="btn-minimal-primary nav-action-btn" style="text-decoration: none;">
         Launch Console
         <i data-lucide="terminal"></i>
       </a>
@@ -67,33 +79,60 @@
     <div class="hero-content">
       <span class="section-label">// Orchestrating Brand Identity</span>
       <h1 class="welcome-headline">
-        The Intelligent <span class="text-gradient">Creative Operating System</span>
+        Design Beyond <span class="text-gradient">Imagination.</span>
       </h1>
       <p class="welcome-sub-headline">
-        Helping startups and enterprises build, govern, and scale their digital identity through one unified virtual command workspace.
+        We don't just build brands. We create experiences people remember.
       </p>
+      
+      <!-- Animated Typing Effect -->
+      <div class="typing-container">
+        <span>// Active module: </span>
+        <span id="typing-text"></span>
+        <span class="typing-cursor"></span>
+      </div>
+
       <div class="cta-group">
-        <a href="#scene-problem-solution" class="btn-minimal-primary" style="text-decoration: none;">
-          Explore Ecosystem
+        <a href="#scene-contact" class="btn-minimal-primary" style="text-decoration: none;">
+          🚀 Start Your Project
           <i data-lucide="arrow-right"></i>
         </a>
         <a href="#scene-bento" class="btn-minimal-secondary" style="text-decoration: none;">
-          View Live Demo
-          <i data-lucide="monitor"></i>
+          🎬 Watch Showreel
+          <i data-lucide="play-circle"></i>
         </a>
       </div>
     </div>
   </section>
 
+  <!-- ================= SHOWCASE CAROUSEL REEL ================= -->
+  <div class="showcase-reel">
+    <div class="showcase-reel-track">
+      <div class="reel-item">🏢 Brand Logos</div>
+      <div class="reel-item">📱 UI Designs</div>
+      <div class="reel-item">🕶️ 3D Models</div>
+      <div class="reel-item">📦 Packaging</div>
+      <div class="reel-item">🧠 AI Projects</div>
+      <div class="reel-item">🌐 Web Platforms</div>
+      <!-- Duplicate for infinite scrolling -->
+      <div class="reel-item">🏢 Brand Logos</div>
+      <div class="reel-item">📱 UI Designs</div>
+      <div class="reel-item">🕶️ 3D Models</div>
+      <div class="reel-item">📦 Packaging</div>
+      <div class="reel-item">🧠 AI Projects</div>
+      <div class="reel-item">🌐 Web Platforms</div>
+    </div>
+  </div>
+
   <!-- ================= SCENE 3 — {PROBLEM vs SOLUTION} ================= -->
   <section class="scene" id="scene-problem-solution">
     <span class="section-label">// Operational Contrast</span>
-    <h2>Fragmented Legacy vs. CYL OS</h2>
-    <p class="section-desc">
-      Modern brands currently rely on multiple disconnected platforms for design, assets, and specs. We bring these scopes together.
+    <h2 class="reveal-item-trigger">Every great company begins with a story.</h2>
+    <p class="section-desc reveal-item-trigger">
+      We transform ideas into brands that people trust, remember, and proudly share.
     </p>
     
-    <div class="comparison-container">
+    <div class="comparison-container reveal-item-trigger">
       
       <!-- Challenge Card -->
       <div class="comparison-card glass-panel challenge-card">
@@ -169,12 +208,12 @@
   <!-- ================= SCENE 4 — {THE BENTO WORKSPACE} ================= -->
   <section class="scene" id="scene-bento">
     <span class="section-label">// Holographic Ecosystem</span>
-    <h2>The Digital Identity Workspace</h2>
-    <p class="section-desc">
+    <h2 class="reveal-item-trigger">The Digital Identity Workspace</h2>
+    <p class="section-desc reveal-item-trigger">
       Orchestrate, code, and track branding tasks in a unified interface that floatingly adapts to your requirements.
     </p>
     
-    <div class="bento-container">
+    <div class="bento-container reveal-item-trigger">
       
       <!-- Card 1: AI Studio -->
       <div class="bento-card glass-panel bento-ai-studio">
@@ -190,7 +229,7 @@
           <div style="width: 40%; display: flex; flex-direction: column; gap: 10px;">
             <div style="display: flex; flex-direction: column; gap: 4px;">
               <span style="font-family: var(--font-mono); font-size: 0.6rem; color: var(--text-muted);">ASSET</span>
-              <select style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: white; padding: 4px; border-radius: 4px; font-size: 0.7rem; outline: none;">
+              <select style="background: rgba(0,0,0,0.4); border: 1px solid var(--border-color); color: white; padding: 4px; border-radius: 4px; font-size: 0.7rem; outline: none; cursor: none;">
                 <option>Vector Logo</option>
                 <option>UI Mockup</option>
               </select>
@@ -278,67 +317,298 @@
   <!-- ================= SCENE 5 — {SERVICES DECK} ================= -->
   <section class="scene" id="scene-services">
     <span class="section-label">// Capability Array</span>
-    <h2>Creative & Engineering Services</h2>
-    <p class="section-desc">
+    <h2 class="reveal-item-trigger">Premium Capabilities</h2>
+    <p class="section-desc reveal-item-trigger">
       Explore the modular workflows our designers, developers, and AI agents deploy for client projects.
     </p>
     
-    <div class="services-grid" id="services-grid">
+    <div class="services-grid reveal-item-trigger" id="services-grid">
       <!-- Injected Dynamically by JS -->
     </div>
   </section>
 
-  <!-- ================= SCENE 6 — {METRICS & GLOBE SHOWCASE} ================= -->
-  <section class="scene" id="scene-metrics">
-    <span class="section-label">// Scale & Performance</span>
-    <h2>Global Operations & Core Metrics</h2>
-    <p class="section-desc">
-      Monitoring node requests, sync speeds, and deployment uptimes across international agency systems.
+  <!-- ================= SCENE 6 — {PORTFOLIO SHOWCASE} ================= -->
+  <section class="scene" id="scene-portfolio">
+    <span class="section-label">// Selected Case Studies</span>
+    <h2 class="reveal-item-trigger">Portfolio Showcase</h2>
+    <p class="section-desc reveal-item-trigger">
+      Hover over cards to see adaptive shifts from design to implementation files.
     </p>
     
-    <div class="metrics-showcase">
+    <div class="portfolio-grid reveal-item-trigger">
       
-      <!-- Coordinate Globe -->
-      <div class="world-map-wrapper glass-panel">
-        <canvas id="map-canvas"></canvas>
-        <div class="map-stats">
-          <div class="map-stat-row">
-            <span>NODES:</span>
-            <span class="map-stat-value">SF, LDN, BLR, TYO</span>
-          </div>
-          <div class="map-stat-row">
-            <span>LATENCY:</span>
-            <span class="map-stat-value">12ms (FAST)</span>
-          </div>
+      <!-- Portfolio 1: Brand Vault -->
+      <div class="portfolio-card glass-panel">
+        <div class="card-sheen"></div>
+        <span class="portfolio-badge-label">Logo / Visuals</span>
+        <div class="portfolio-image-container">
+          <div class="portfolio-slide before-desktop" style="background-image: url('https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?q=80&width=800');"></div>
+          <div class="portfolio-slide after-mobile" style="background-image: url('https://images.unsplash.com/photo-1634017839464-5c339ebe3cb4?q=80&width=800');"></div>
+        </div>
+        <div class="portfolio-info">
+          <span class="portfolio-tag">Brand Strategy</span>
+          <h3 class="portfolio-title">Aethera Brand Identity</h3>
         </div>
       </div>
 
-      <!-- Resources split -->
-      <div class="metrics-split">
-        <div class="metric-card glass-panel">
-          <div class="card-sheen"></div>
-          <div>
-            <span class="section-label" style="margin-bottom: 2px;">Deploy Uptime</span>
-            <h4 style="font-size: 1.1rem;">Secure Operations</h4>
-            <div class="metric-bar"><div class="metric-bar-fill" style="width: 99.9%; background: var(--neon-green);"></div></div>
-          </div>
-          <div class="metric-num">99.9%</div>
+      <!-- Portfolio 2: UI Design -->
+      <div class="portfolio-card glass-panel">
+        <div class="card-sheen"></div>
+        <span class="portfolio-badge-label">Desktop vs Mobile</span>
+        <div class="portfolio-image-container">
+          <div class="portfolio-slide before-desktop" style="background-image: url('https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&width=800');"></div>
+          <div class="portfolio-slide after-mobile" style="background-image: url('https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?q=80&width=800');"></div>
         </div>
-        <div class="metric-card glass-panel">
-          <div class="card-sheen"></div>
-          <div>
-            <span class="section-label" style="margin-bottom: 2px;">Sync Speed</span>
-            <h4 style="font-size: 1.1rem;">Zero-Damping Sync</h4>
-            <div class="metric-bar"><div class="metric-bar-fill" style="width: 92%; background: var(--neon-blue);"></div></div>
-          </div>
-          <div class="metric-num">380ms</div>
+        <div class="portfolio-info">
+          <span class="portfolio-tag">UI/UX Development</span>
+          <h3 class="portfolio-title">Synthetix Enterprise Platform</h3>
         </div>
       </div>
 
     </div>
   </section>
 
-  <!-- ZERO-G DAMPING CONTROLLER SLIDER -->
+  <!-- ================= SCENE 7 — {INTERACTIVE PROCESS TIMELINE} ================= -->
+  <section class="scene" id="scene-timeline">
+    <span class="section-label">// Dynamic Roadmap</span>
+    <h2 class="reveal-item-trigger">Our Creative Process</h2>
+    <p class="section-desc reveal-item-trigger">
+      We execute and deliver pixel-perfect digital systems through a step-by-step secure pipeline.
+    </p>
+    
+    <div class="timeline-container reveal-item-trigger">
+      <div class="timeline-line"></div>
+      <div class="timeline-line-progress" id="timeline-scroll-progress"></div>
+      
+      <div class="timeline-item active">
+        <div class="timeline-dot">01</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title">Discovery</h3>
+          <p class="timeline-desc">Initial scoping calls to map your business objectives, audience needs, and brand goals.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">02</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title">Research</h3>
+          <p class="timeline-desc">Comprehensive competitive analysis and moodboarding to align target art directions.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">03</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title">Design</h3>
+          <p class="timeline-desc">Drafting high-fidelity mockups, vector logos, and color swatches inside Figma and custom studios.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">04</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title">Development</h3>
+          <p class="timeline-desc">Coding responsive, lightweight interfaces in Vite, compiling modules without layout bugs.</p>
+        </div>
+      </div>
+
+      <div class="timeline-item">
+        <div class="timeline-dot">05</div>
+        <div class="timeline-content">
+          <h3 class="timeline-title">Launch</h3>
+          <p class="timeline-desc">Deploying to staging environments and executing DNS routing updates for live operations.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 8 — {LIVE STATISTICS COUNTER} ================= -->
+  <section class="scene" id="scene-stats">
+    <span class="section-label">// Verified Performance</span>
+    <h2 class="reveal-item-trigger">Live Core Metrics</h2>
+    
+    <div class="stats-container reveal-item-trigger">
+      <div class="stat-item">
+        <div class="stat-number" id="stat-projects" data-target="150">0</div>
+        <div class="stat-label">Projects Completed</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="stat-clients" data-target="80">0</div>
+        <div class="stat-label">Happy Clients</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="stat-countries" data-target="10">0</div>
+        <div class="stat-label">Countries Served</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="stat-satisfaction" data-target="99">0</div>
+        <div class="stat-label">Satisfaction Rate</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 9 — {TESTIMONIALS SLIDER} ================= -->
+  <section class="scene" id="scene-testimonials">
+    <span class="section-label">// Client Endorsements</span>
+    <h2 class="reveal-item-trigger">What People Say</h2>
+    
+    <div class="testimonials-slider-wrapper reveal-item-trigger">
+      <div class="testimonials-track" id="testimonials-track">
+        
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"CYL completely overhauled our digital presence. The 3D animations and zero-g sliders are a massive showoff to our clients!"</p>
+          <span class="testimonial-author">— Founder, Synthetix AI</span>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"The conversational contact setup has tripled our incoming project leads. Extremely premium client-facing workflow."</p>
+          <span class="testimonial-author">— Director of Operations, Aethera</span>
+        </div>
+
+        <div class="testimonial-card">
+          <div class="testimonial-stars">★★★★★</div>
+          <p class="testimonial-quote">"A truly unique agency. The custom cursor controls and floating AI dashboard interactions are state of the art."</p>
+          <span class="testimonial-author">— CTO, Veloce Logistics</span>
+        </div>
+
+      </div>
+
+      <div class="slider-controls">
+        <button class="slider-btn" id="prev-testimonial-btn"><i data-lucide="chevron-left"></i></button>
+        <button class="slider-btn" id="next-testimonial-btn"><i data-lucide="chevron-right"></i></button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 10 — {PREMIUM CONVERSATIONAL FORM} ================= -->
+  <section class="scene" id="scene-contact">
+    <span class="section-label">// Get In Touch</span>
+    <h2 class="reveal-item-trigger">Let's Build Something Great</h2>
+    <p class="section-desc reveal-item-trigger">Complete our step-by-step conversational planner to initiate your project brief.</p>
+    
+    <div class="conversational-form-wrapper glass-panel reveal-item-trigger">
+      <div class="form-progress-bar">
+        <div class="form-progress-fill" id="form-progress-fill"></div>
+      </div>
+      
+      <div style="overflow: hidden; width: 100%;">
+        <div class="form-steps-container" id="form-steps-track">
+          
+          <!-- Step 1: Name -->
+          <div class="form-step">
+            <label class="form-question">What's your name?</label>
+            <input type="text" class="form-input" id="form-input-name" placeholder="Enter your full name...">
+          </div>
+
+          <!-- Step 2: Company -->
+          <div class="form-step">
+            <label class="form-question">What is your company name?</label>
+            <input type="text" class="form-input" id="form-input-company" placeholder="Enter your business/organization...">
+          </div>
+
+          <!-- Step 3: Project Type -->
+          <div class="form-step">
+            <label class="form-question">Select your project type:</label>
+            <div class="form-options-grid" id="form-options-type">
+              <div class="form-option-card" data-val="branding">Brand Identity</div>
+              <div class="form-option-card" data-val="uiux">UI/UX Interface</div>
+              <div class="form-option-card" data-val="ai">AI Solutions</div>
+              <div class="form-option-card" data-val="web">Web Development</div>
+            </div>
+          </div>
+
+          <!-- Step 4: Budget -->
+          <div class="form-step">
+            <label class="form-question">What is your estimated budget?</label>
+            <div class="form-options-grid" id="form-options-budget">
+              <div class="form-option-card" data-val="5k-10k">$5k - $10k</div>
+              <div class="form-option-card" data-val="10k-25k">$10k - $25k</div>
+              <div class="form-option-card" data-val="25k-50k">$25k - $50k</div>
+              <div class="form-option-card" data-val="50k+">$50k+</div>
+            </div>
+          </div>
+
+          <!-- Step 5: Submission -->
+          <div class="form-step">
+            <label class="form-question">Ready to deploy creative files?</label>
+            <p style="font-size: 0.85rem; color: var(--text-muted); line-height: 1.4; margin-bottom: 12px;">Click the submit button to launch your brief into the CYL system core.</p>
+            <button class="btn-minimal-primary" id="btn-form-submit" style="width: 100%; justify-content: center; height: 44px;">
+              Submit Brief
+              <i data-lucide="check-circle"></i>
+            </button>
+          </div>
+
+        </div>
+      </div>
+      
+      <div class="form-nav-buttons">
+        <button class="btn-minimal-secondary" id="btn-form-prev" style="visibility: hidden;">Back</button>
+        <button class="btn-minimal-primary" id="btn-form-next">Next</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= SCENE 11 — {POWERFUL END CTA} ================= -->
+  <section class="scene scene-cta-end" id="scene-cta-end">
+    <div class="cta-end-content">
+      <span class="section-label">// Project Command</span>
+      <h2 class="cta-end-title">Ready to Build Something Extraordinary?</h2>
+      <p class="cta-end-desc">Join forces with CYL OS. We merge world-class engineering, visual branding assets, and custom neural networks into high-fidelity products.</p>
+      
+      <div class="cta-group" style="justify-content: center;">
+        <a href="#scene-contact" class="btn-minimal-primary" style="text-decoration: none;">
+          Start Your Project
+          <i data-lucide="terminal"></i>
+        </a>
+        <a href="#scene-services" class="btn-minimal-secondary" style="text-decoration: none;">
+          Book Free Consultation
+          <i data-lucide="calendar"></i>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= FLOATING AI ASSISTANT PANEL ================= -->
+  <div class="floating-ai-assistant">
+    <div class="ai-assistant-viewport" id="ai-viewport">
+      <div class="ai-header">
+        <div style="display: flex; align-items: center; gap: 8px;">
+          <div class="floating-status-dot"></div>
+          <span style="font-family: var(--font-mono); font-size: 0.75rem; font-weight: bold;">CYL AI Copilot</span>
+        </div>
+        <i data-lucide="x" style="width: 14px; height: 14px; cursor: none;" id="ai-close-btn"></i>
+      </div>
+      <div class="ai-messages" id="ai-chat-messages">
+        <div class="ai-msg system">
+          👋 Hi! I'm CYL AI. Tell me your business idea (e.g. "futuristic space coffee shop"), and I will suggest branding styles, colors, logo strategies, and marketing systems!
+        </div>
+      </div>
+      <div class="ai-input-group">
+        <input type="text" class="ai-text-input" id="ai-chat-input" placeholder="Type your business idea...">
+        <button class="ai-send-btn" id="ai-send-btn">
+          <i data-lucide="send" style="width: 12px; height: 12px;"></i>
+        </button>
+      </div>
+    </div>
+    
+    <button class="ai-assistant-toggle" id="ai-toggle-btn" aria-label="Toggle AI assistant">
+      <i data-lucide="message-square" id="ai-icon-toggle"></i>
+    </button>
+  </div>
+
+  <!-- FLOATING WIDGETS -->
+  <div class="floating-status-widget" id="floating-status">
+    <div class="floating-status-dot"></div>
+    <span>12 Projects Completed This Month</span>
+  </div>
+
+  <button class="floating-back-to-top" id="back-to-top-btn" aria-label="Back to Top">
+    <i data-lucide="arrow-up" style="width: 16px; height: 16px;"></i>
+  </button>
+
+  <!-- ZERO-G DAMPING CONTROLLER SLIDER (Left-aligned fixed dashboard widget) -->
   <div class="gravity-deck-controller" id="gravity-controller">
     <span class="gravity-label">
       <i data-lucide="activity" class="tree-icon" style="width: 14px; height: 14px;"></i>
@@ -348,8 +618,12 @@
     <span class="gravity-value" id="gravity-slider-val">100%</span>
   </div>
 
-  <!-- Include GSAP libraries via CDN -->
+  <!-- Include GSAP and ScrollTrigger CDNs -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  
+  <!-- Canvas Confetti CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
   
   <!-- Main Script -->
   <script type="module" src="./src/main.js"></script>
