@@ -1,4 +1,7 @@
 // CYL OS — Antigravity Showcase Controller
+import { gsap } from 'gsap';
+import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import confetti from 'canvas-confetti';
 
 // Initialize Lucide Icons
 if (window.lucide) {
@@ -6,9 +9,7 @@ if (window.lucide) {
 }
 
 // Register GSAP ScrollTrigger
-if (window.gsap && window.ScrollTrigger) {
-  gsap.registerPlugin(ScrollTrigger);
-}
+gsap.registerPlugin(ScrollTrigger);
 
 // ----------------------------------------------------
 // 1. STATE & GLOBAL CONFIG
@@ -562,13 +563,11 @@ function initConversationalForm() {
   if (formSubmitBtn) {
     formSubmitBtn.addEventListener('click', () => {
       // Confetti burst micro-interaction!
-      if (window.confetti) {
-        window.confetti({
-          particleCount: 160,
-          spread: 80,
-          origin: { y: 0.65 }
-        });
-      }
+      confetti({
+        particleCount: 160,
+        spread: 80,
+        origin: { y: 0.65 }
+      });
       
       alert(`Project brief compiled! Thank you, ${selectedBrief.name}. We will initiate scoping calls for ${selectedBrief.company} shortly.`);
       
