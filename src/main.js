@@ -1,6 +1,23 @@
 // CYL OS — Antigravity Showcase Controller
+window.addEventListener('error', (e) => {
+  const errDiv = document.createElement('div');
+  errDiv.style.position = 'fixed';
+  errDiv.style.top = '0';
+  errDiv.style.left = '0';
+  errDiv.style.width = '100%';
+  errDiv.style.background = 'red';
+  errDiv.style.color = 'white';
+  errDiv.style.padding = '20px';
+  errDiv.style.zIndex = '99999';
+  errDiv.style.fontFamily = 'monospace';
+  errDiv.style.fontSize = '12px';
+  errDiv.style.wordBreak = 'break-all';
+  errDiv.innerHTML = `<strong>GLOBAL ERROR:</strong> ${e.message}<br>File: ${e.filename}:${e.lineno}:${e.colno}<br>Stack: ${e.error ? e.error.stack : ''}`;
+  document.body.appendChild(errDiv);
+});
+
 import { gsap } from 'gsap';
-import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import ScrollTrigger from 'gsap/ScrollTrigger';
 import confetti from 'canvas-confetti';
 
 // Initialize Lucide Icons
