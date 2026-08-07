@@ -888,7 +888,23 @@ function setupScrollObserver() {
 // 17. GSAP SCROLLTRIGGER REVEALS & COUNT-UPS
 // ----------------------------------------------------
 function setupScrollTriggerAnimations() {
-  if (!window.ScrollTrigger) return;
+  if (!ScrollTrigger) return;
+  
+  // Standard scroll reveal for all triggered items
+  const revealItems = document.querySelectorAll('.reveal-item-trigger');
+  revealItems.forEach(item => {
+    gsap.to(item, {
+      scrollTrigger: {
+        trigger: item,
+        start: 'top 85%',
+        toggleActions: 'play none none none'
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      ease: 'power3.out'
+    });
+  });
   
   // Stagger reveal of services
   gsap.from('#services-grid .service-card', {
