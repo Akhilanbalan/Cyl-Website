@@ -618,6 +618,37 @@
     <span class="gravity-value" id="gravity-slider-val">100%</span>
   </div>
 
+  <!-- Live Debug Diagnostics Overlay -->
+  <div id="debug-overlay" style="position: fixed; bottom: 80px; left: 20px; background: rgba(9,9,11,0.9); border: 2px solid #8B5CF6; border-radius: 8px; padding: 12px; font-family: monospace; font-size: 11px; color: #fff; z-index: 99999; pointer-events: none; width: 300px; box-shadow: 0 10px 30px rgba(0,0,0,0.8);">
+    <div style="font-weight: bold; margin-bottom: 6px; border-bottom: 1px solid #333; padding-bottom: 4px; color: #C4B5FD;">[CYL ENGINE DIAGNOSTICS]</div>
+    <div id="debug-headline">Headline: Loading...</div>
+    <div id="debug-subhead">Subhead: Loading...</div>
+    <div id="debug-cta">CTA Group: Loading...</div>
+    <div id="debug-theme">Theme: Loading...</div>
+  </div>
+  <script>
+    setInterval(() => {
+      try {
+        const headline = document.querySelector('.welcome-headline');
+        const subhead = document.querySelector('.welcome-sub-headline');
+        const cta = document.querySelector('.cta-group');
+        
+        const getStyleText = (el) => {
+          if (!el) return 'NULL';
+          const style = window.getComputedStyle(el);
+          return `opacity=${style.opacity} color=${style.color} display=${style.display} height=${el.offsetHeight}px`;
+        };
+        
+        document.getElementById('debug-headline').innerText = 'Headline: ' + getStyleText(headline);
+        document.getElementById('debug-subhead').innerText = 'Subhead: ' + getStyleText(subhead);
+        document.getElementById('debug-cta').innerText = 'CTA: ' + getStyleText(cta);
+        document.getElementById('debug-theme').innerText = 'Theme: ' + document.documentElement.getAttribute('data-theme') + ' | ' + window.getComputedStyle(document.body).backgroundColor;
+      } catch(e) {
+        console.error('Debug script error:', e);
+      }
+    }, 500);
+  </script>
+
   <!-- Main Script -->
   <script type="module" src="./src/main.js"></script>
 </body>
